@@ -40,6 +40,7 @@ namespace BatterySystem
 		{
 			BatterySystemConfig.Init(Config);
 			if (!BatterySystemConfig.EnableMod.Value) return;
+
 			new PlayerInitPatch().Enable();
 			new AimSightPatch().Enable();
 			//new GetBoneForSlotPatch().Enable();
