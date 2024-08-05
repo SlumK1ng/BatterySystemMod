@@ -47,15 +47,6 @@ namespace BatterySystem
 				return null;
 		}
 
-		public static bool IsInSlot(Item item, Slot slot)
-		{
-			if (item == null) return false;
-            if (slot == null) return false;
-            if (slot.ContainedItem == null) return false;
-
-			return item.IsChildOf(slot.ContainedItem);
-        }
-
 		public static void UpdateBatteryDictionary()
 		{
 			// Remove unequipped items
@@ -290,5 +281,13 @@ namespace BatterySystem
 				}
 			}
 		}
-	}
+        public static bool IsInSlot(Item item, Slot slot)
+        {
+            if (item == null) return false;
+            if (slot == null) return false;
+            if (slot.ContainedItem == null) return false;
+
+            return item.IsChildOf(slot.ContainedItem);
+        }
+    }
 }
