@@ -32,26 +32,24 @@ namespace BatterySystem
 		public void Awake()
 		{
 			BatterySystemConfig.Init(Config);
-			if (BatterySystemConfig.EnableMod.Value)
+			if (!BatterySystemConfig.EnableMod.Value) return;
+			new PlayerInitPatch().Enable();
+			new AimSightPatch().Enable();
+			//new GetBoneForSlotPatch().Enable();
+			if (BatterySystemConfig.EnableHeadsets.Value)
+				new UpdatePhonesPatch().Enable();
+			new ApplyItemPatch().Enable();
+			new SightDevicePatch().Enable();
+			//new FoldableSightPatch().Enable();
+			new TacticalDevicePatch().Enable();
+			new NvgHeadWearPatch().Enable();
+			new ThermalHeadWearPatch().Enable();
 			{
-				new PlayerInitPatch().Enable();
-				new AimSightPatch().Enable();
-				//new GetBoneForSlotPatch().Enable();
-				if (BatterySystemConfig.EnableHeadsets.Value)
-					new UpdatePhonesPatch().Enable();
-				new ApplyItemPatch().Enable();
-				new SightDevicePatch().Enable();
-				//new FoldableSightPatch().Enable();
-				new TacticalDevicePatch().Enable();
-				new NvgHeadWearPatch().Enable();
-				new ThermalHeadWearPatch().Enable();
-				{
-					_headWearDrainMultiplier.Add("5c0696830db834001d23f5da", 1f); // PNV-10T Night Vision Goggles, AA Battery
-					_headWearDrainMultiplier.Add("5c0558060db834001b735271", 2f); // GPNVG-18 Night Vision goggles, CR123 battery pack
-					_headWearDrainMultiplier.Add("5c066e3a0db834001b7353f0", 1f); // Armasight N-15 Night Vision Goggles, single CR123A lithium battery
-					_headWearDrainMultiplier.Add("57235b6f24597759bf5a30f1", 0.5f); // AN/PVS-14 Night Vision Monocular, AA Battery
-					_headWearDrainMultiplier.Add("5c110624d174af029e69734c", 3f); // T-7 Thermal Goggles with a Night Vision mount, Double AA
-				}
+				_headWearDrainMultiplier.Add("5c0696830db834001d23f5da", 1f); // PNV-10T Night Vision Goggles, AA Battery
+				_headWearDrainMultiplier.Add("5c0558060db834001b735271", 2f); // GPNVG-18 Night Vision goggles, CR123 battery pack
+				_headWearDrainMultiplier.Add("5c066e3a0db834001b7353f0", 1f); // Armasight N-15 Night Vision Goggles, single CR123A lithium battery
+				_headWearDrainMultiplier.Add("57235b6f24597759bf5a30f1", 0.5f); // AN/PVS-14 Night Vision Monocular, AA Battery
+				_headWearDrainMultiplier.Add("5c110624d174af029e69734c", 3f); // T-7 Thermal Goggles with a Night Vision mount, Double AA
 			}
 		}
 
