@@ -98,7 +98,6 @@ namespace BatterySystem
 					//for sights, earpiece and tactical devices
 					else if (item.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault() != null)
 					{
-						BatterySystem.Logger.LogInfo("Draining item: " + item + item.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault());
 						item.GetItemComponentsInChildren<ResourceComponent>(false).First().Value -= 1 / 100f
 							* BatterySystemConfig.DrainMultiplier.Value; //2 hr
 
