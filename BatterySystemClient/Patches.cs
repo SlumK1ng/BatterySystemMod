@@ -82,36 +82,28 @@ namespace BatterySystem
 						if (battery == null) continue;
 
                         slot.Add(battery, false);
+                        DrainSpawnedBattery(battery, botPlayer);
                     }
                 }
             }
         }
 
-		private static void DrainSpawnedBattery(Player botPlayer)
+		private static void DrainSpawnedBattery(Item spawnedBattery, Player botPlayer)
 		{
-            Inventory _botInventory = botPlayer.InventoryControllerClass.Inventory;
-            foreach (Item item in _botInventory.Equipment.GetAllItems())
+			//batteries charge depends on their max charge and bot level
+			foreach (ResourceComponent batteryResource in spawnedBattery.GetItemComponentsInChildren<ResourceComponent>())
 			{
-				//batteries charge depends on their max charge and bot level
-				for (int i = 0; i < item.GetItemComponentsInChildren<ResourceComponent>().Count(); i++)
+				int resourceAvg = _random.Next(0, 5);
+				if (batteryResource.MaxResource > 0)
 				{
-					int resourceAvg = _random.Next(0, 5);
-					ResourceComponent resource = item.GetItemComponentsInChildren<ResourceComponent>().ElementAt(i);
-					if (resource.MaxResource > 0)
-					{
-						if (botPlayer.Side != EPlayerSide.Savage)
-						{
-							resourceAvg = (int)(botPlayer.Profile.Info.Level / 150f * resource.MaxResource);
-						}
-						resource.Value = _random.Next(Mathf.Max(resourceAvg - 10, 0), (int)Mathf.Min(resourceAvg + 5, resource.MaxResource));
-					}
-					if (BatterySystemConfig.EnableLogs.Value)
+					if (botPlayer.Side != EPlayerSide.Savage)
 					{
 						Logger.LogInfo("DrainSpawnedBattery on Bot at " + Time.time);
 						Logger.LogInfo("LVL: " + botPlayer.Profile.Info.Level + " AVG: " + resourceAvg);
 						Logger.LogInfo("Checking item from slot: " + item);
 						Logger.LogInfo("Res value: " + resource.Value);
 					}
+                    batteryResource.Value = _random.Next(Mathf.Max(resourceAvg - 10, 0), (int)Mathf.Min(resourceAvg + 5, batteryResource.MaxResource));
 				}
 			}
 		}
