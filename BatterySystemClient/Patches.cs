@@ -98,10 +98,7 @@ namespace BatterySystem
 				{
 					if (botPlayer.Side != EPlayerSide.Savage)
 					{
-						Logger.LogInfo("DrainSpawnedBattery on Bot at " + Time.time);
-						Logger.LogInfo("LVL: " + botPlayer.Profile.Info.Level + " AVG: " + resourceAvg);
-						Logger.LogInfo("Checking item from slot: " + item);
-						Logger.LogInfo("Res value: " + resource.Value);
+						resourceAvg = (int)(botPlayer.Profile.Info.Level / 150f * batteryResource.MaxResource);
 					}
                     batteryResource.Value = _random.Next(Mathf.Max(resourceAvg - 10, 0), (int)Mathf.Min(resourceAvg + 5, batteryResource.MaxResource));
 				}
