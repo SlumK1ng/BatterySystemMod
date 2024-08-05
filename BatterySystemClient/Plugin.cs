@@ -74,9 +74,8 @@ namespace BatterySystem
 		private static void DrainBatteries()
 		{
 			//here?
-			for (int i = batteryDictionary.Count - 1; i >= 0; i--)
+			foreach (Item item in batteryDictionary.Keys)
 			{
-				Item item = batteryDictionary.Keys.ElementAt(i);
 				if (batteryDictionary[item]) // == true
 				{
 					// Drain headwear NVG/Thermal
