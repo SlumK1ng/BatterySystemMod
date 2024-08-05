@@ -27,6 +27,8 @@ namespace BatterySystem
 		public static Dictionary<Item, bool> batteryDictionary = new Dictionary<Item, bool>();
 		//resource drain all batteries that are on // using dictionary to help and sync draining batteries
 
+		public static Inventory localInventory;
+
 		public void Awake()
 		{
 			BatterySystemConfig.Init(Config);
@@ -90,7 +92,7 @@ namespace BatterySystem
 						if (item.GetItemComponentsInChildren<ResourceComponent>(false).First().Value < 0f)
 						{
 							item.GetItemComponentsInChildren<ResourceComponent>(false).First().Value = 0f;
-							if (item.IsChildOf(PlayerInitPatch.GetEquipmentSlot(EquipmentSlot.Headwear).ContainedItem))
+							if (item.IsChildOf(BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Headwear).ContainedItem))
 								BatterySystem.CheckHeadWearIfDraining();
 
 						}
@@ -105,7 +107,7 @@ namespace BatterySystem
 						if (item.GetItemComponentsInChildren<ResourceComponent>(false).First().Value < 0f)
 						{
 							item.GetItemComponentsInChildren<ResourceComponent>(false).First().Value = 0f;
-							if (item.IsChildOf(PlayerInitPatch.GetEquipmentSlot(EquipmentSlot.Earpiece).ContainedItem))
+							if (item.IsChildOf(BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Earpiece).ContainedItem))
 								BatterySystem.CheckEarPieceIfDraining();
 							else if (item.IsChildOf(Singleton<GameWorld>.Instance.MainPlayer?.ActiveSlot.ContainedItem))
 							{

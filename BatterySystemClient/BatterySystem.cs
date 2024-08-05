@@ -60,8 +60,8 @@ namespace BatterySystem
 			for (int i = BatterySystemPlugin.batteryDictionary.Count - 1; i >= 0; i--)
 			{
 				Item key = BatterySystemPlugin.batteryDictionary.Keys.ElementAt(i);
-				if (!(IsInSlot(key, PlayerInitPatch.GetEquipmentSlot(EquipmentSlot.Earpiece))
-					|| IsInSlot(key, PlayerInitPatch.GetEquipmentSlot(EquipmentSlot.Headwear))
+				if (!(IsInSlot(key, BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Earpiece))
+					|| IsInSlot(key, BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Headwear))
 					|| IsInSlot(key, Singleton<GameWorld>.Instance.MainPlayer.ActiveSlot)))
 					BatterySystemPlugin.batteryDictionary.Remove(key);
 			}
@@ -97,7 +97,7 @@ namespace BatterySystem
 		{
 			if (BatterySystemConfig.EnableHeadsets.Value)
 			{
-				_earPieceItem = PlayerInitPatch.GetEquipmentSlot(EquipmentSlot.Earpiece).Items?.FirstOrDefault();
+				_earPieceItem = BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Earpiece).Items?.FirstOrDefault();
 				_earPieceBattery = _earPieceItem?.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault();
 				_drainingEarPieceBattery = false;
 				if (BatterySystemConfig.EnableLogs.Value)
@@ -152,7 +152,7 @@ namespace BatterySystem
 
 		public static void SetHeadWearComponents()
 		{
-			headWearItem = PlayerInitPatch.GetEquipmentSlot(EquipmentSlot.Headwear).Items?.FirstOrDefault(); // default null else headwear
+			headWearItem = BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Headwear).Items?.FirstOrDefault(); // default null else headwear
 			_headWearNvg = headWearItem?.GetItemComponentsInChildren<NightVisionComponent>().FirstOrDefault(); //default null else nvg item
 			_headWearThermal = headWearItem?.GetItemComponentsInChildren<ThermalVisionComponent>().FirstOrDefault(); //default null else thermal item
 			headWearBattery = GetheadWearSight()?.Parent.Item.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault(); //default null else resource
