@@ -55,7 +55,6 @@ namespace BatterySystem
                 await Task.Delay(1000);
 
 				AddBatteriesToBot(__instance);
-                DrainSpawnedBattery(__instance);
 			}
 		}
 		
