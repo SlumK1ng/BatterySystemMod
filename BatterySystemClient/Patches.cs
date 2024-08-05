@@ -20,7 +20,6 @@ namespace BatterySystem
 {
 	public class PlayerInitPatch : ModulePatch
 	{
-		private static InventoryControllerClass _botInventory = null;
 		public static FieldInfo nvgOnField = null;
 		public static FieldInfo thermalOnField = null;
 		private static readonly System.Random _random = new System.Random();
