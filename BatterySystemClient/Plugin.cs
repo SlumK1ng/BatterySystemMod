@@ -103,6 +103,7 @@ namespace BatterySystem
 				}
 			}
 		}
+
         public static bool InGame()
         {
             return Singleton<GameWorld>.Instance?.MainPlayer?.HealthController.IsAlive == true
