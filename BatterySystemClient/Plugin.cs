@@ -68,41 +68,40 @@ namespace BatterySystem
 			//here?
 			foreach (Item item in batteryDictionary.Keys)
 			{
-				if (batteryDictionary[item]) // == true
+				if (!batteryDictionary[item]) continue;
+
+				// Drain headwear NVG/Thermal
+				if (BatterySystem.headWearBattery != null && item.IsChildOf(BatterySystem.headWearItem)
+					&& BatterySystem.headWearItem.GetItemComponentsInChildren<TogglableComponent>().FirstOrDefault()?.On == true)
 				{
-					// Drain headwear NVG/Thermal
-					if (BatterySystem.headWearBattery != null && item.IsChildOf(BatterySystem.headWearItem)
-						&& BatterySystem.headWearItem.GetItemComponentsInChildren<TogglableComponent>().FirstOrDefault()?.On == true)
+					//Default battery lasts 1 hr * configmulti * itemmulti, itemmulti was Hazelify's idea!
+					BatterySystem.headWearBattery.Value -= Mathf.Clamp(1 / 36f
+							* BatterySystemConfig.DrainMultiplier.Value
+							* _headWearDrainMultiplier[BatterySystem.GetheadWearSight()?.TemplateId], 0f, 100f);
+					if (item.GetItemComponentsInChildren<ResourceComponent>(false).First().Value < 0f)
 					{
-						//Default battery lasts 1 hr * configmulti * itemmulti, itemmulti was Hazelify's idea!
-						BatterySystem.headWearBattery.Value -= Mathf.Clamp(1 / 36f
-								* BatterySystemConfig.DrainMultiplier.Value
-								* _headWearDrainMultiplier[BatterySystem.GetheadWearSight()?.TemplateId], 0f, 100f);
-						if (item.GetItemComponentsInChildren<ResourceComponent>(false).First().Value < 0f)
-						{
-							item.GetItemComponentsInChildren<ResourceComponent>(false).First().Value = 0f;
-							if (item.IsChildOf(BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Headwear).ContainedItem))
-								BatterySystem.CheckHeadWearIfDraining();
+						item.GetItemComponentsInChildren<ResourceComponent>(false).First().Value = 0f;
+						if (item.IsChildOf(BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Headwear).ContainedItem))
+							BatterySystem.CheckHeadWearIfDraining();
 
-						}
 					}
-					//for sights, earpiece and tactical devices
-					else if (item.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault() != null)
-					{
-						item.GetItemComponentsInChildren<ResourceComponent>(false).First().Value -= 1 / 100f
-							* BatterySystemConfig.DrainMultiplier.Value; //2 hr
+				}
+				//for sights, earpiece and tactical devices
+				else if (item.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault() != null)
+				{
+					item.GetItemComponentsInChildren<ResourceComponent>(false).First().Value -= 1 / 100f
+						* BatterySystemConfig.DrainMultiplier.Value; //2 hr
 
-						//when battery has no charge left
-						if (item.GetItemComponentsInChildren<ResourceComponent>(false).First().Value < 0f)
+					//when battery has no charge left
+					if (item.GetItemComponentsInChildren<ResourceComponent>(false).First().Value < 0f)
+					{
+						item.GetItemComponentsInChildren<ResourceComponent>(false).First().Value = 0f;
+						if (item.IsChildOf(BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Earpiece).ContainedItem))
+							BatterySystem.CheckEarPieceIfDraining();
+						else if (item.IsChildOf(Singleton<GameWorld>.Instance.MainPlayer?.ActiveSlot.ContainedItem))
 						{
-							item.GetItemComponentsInChildren<ResourceComponent>(false).First().Value = 0f;
-							if (item.IsChildOf(BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Earpiece).ContainedItem))
-								BatterySystem.CheckEarPieceIfDraining();
-							else if (item.IsChildOf(Singleton<GameWorld>.Instance.MainPlayer?.ActiveSlot.ContainedItem))
-							{
-								BatterySystem.CheckDeviceIfDraining();
-								BatterySystem.CheckSightIfDraining();
-							}
+							BatterySystem.CheckDeviceIfDraining();
+							BatterySystem.CheckSightIfDraining();
 						}
 					}
 				}
