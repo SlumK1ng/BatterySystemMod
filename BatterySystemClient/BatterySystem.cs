@@ -50,13 +50,14 @@ namespace BatterySystem
 		public static void UpdateBatteryDictionary()
 		{
 			// Remove unequipped items
-			for (int i = BatterySystemPlugin.batteryDictionary.Count - 1; i >= 0; i--)
+			var keys = BatterySystemPlugin.batteryDictionary.Keys;
+            foreach (Item key in keys)
 			{
-				Item key = BatterySystemPlugin.batteryDictionary.Keys.ElementAt(i);
-				if (!(IsInSlot(key, BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Earpiece))
-					|| IsInSlot(key, BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Headwear))
-					|| IsInSlot(key, Singleton<GameWorld>.Instance.MainPlayer.ActiveSlot)))
-					BatterySystemPlugin.batteryDictionary.Remove(key);
+				if (IsInSlot(key, BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Earpiece))) continue;
+                if (IsInSlot(key, BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Headwear))) continue;
+                if (IsInSlot(key, Singleton<GameWorld>.Instance.MainPlayer.ActiveSlot)) continue;
+
+				BatterySystemPlugin.batteryDictionary.Remove(key);
 			}
 
 			if (BatterySystemConfig.EnableHeadsets.Value && _earPieceItem != null
