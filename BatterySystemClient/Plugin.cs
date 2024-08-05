@@ -56,11 +56,6 @@ namespace BatterySystem
             InvokeRepeating(nameof(DrainBatteries), 1, 1);
 		}
 
-		public static bool InGame()
-		{
-            return Singleton<GameWorld>.Instance?.MainPlayer?.HealthController.IsAlive == true
-					&& !(Singleton<GameWorld>.Instance.MainPlayer is HideoutPlayer);
-		}
 		//TODO: Throws InvalidOperationException: Collection was modified: enumeration operation may not execute.
 		private static void DrainBatteries()
 		{
@@ -108,5 +103,10 @@ namespace BatterySystem
 				}
 			}
 		}
-	}
+        public static bool InGame()
+        {
+            return Singleton<GameWorld>.Instance?.MainPlayer?.HealthController.IsAlive == true
+                    && !(Singleton<GameWorld>.Instance.MainPlayer is HideoutPlayer);
+        }
+    }
 }
