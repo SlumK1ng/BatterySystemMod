@@ -11,6 +11,8 @@
 *.sln.docstates
 types/
 dist/
+.idea/*
+BatterySystemServer/tmp/*
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -365,3 +367,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /BatterySystemServer/BatterySystemServer.njsproj
 /BatterySystemServer/packageBuild.ts
+/BatterySystemServer/types/*
