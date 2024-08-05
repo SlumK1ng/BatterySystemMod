@@ -60,9 +60,9 @@ namespace BatterySystem
         private static void AddBatteriesToBot(Player botPlayer)
         {
             Inventory _botInventory = botPlayer.InventoryControllerClass.Inventory;
-            Item AAbatteryItem = Singleton<ItemFactory>.Instance.GetPresetItem("5672cb124bdc2d1a0f8b4568");
+            Item AABatteryItem = Singleton<ItemFactory>.Instance.GetPresetItem("5672cb124bdc2d1a0f8b4568");
             Item CR2032Item = Singleton<ItemFactory>.Instance.GetPresetItem("5672cb304bdc2dc2088b456a");
-            Item CR123batteryItem = Singleton<ItemFactory>.Instance.GetPresetItem("590a358486f77429692b2790");
+            Item CR123Item = Singleton<ItemFactory>.Instance.GetPresetItem("590a358486f77429692b2790");
             foreach (Item item in _botInventory.Equipment.GetAllItems())
             {
                 if (item is LootItemClass lootItem)
@@ -70,12 +70,12 @@ namespace BatterySystem
                     foreach (Slot slot in lootItem.AllSlots)
                     {
 						Item battery = null;
-						if (slot.CheckCompatibility(AAbatteryItem))
-							battery = AAbatteryItem.CloneItem();
+						if (slot.CheckCompatibility(AABatteryItem))
+							battery = AABatteryItem.CloneItem();
                         if (slot.CheckCompatibility(CR2032Item))
                             battery = CR2032Item.CloneItem();
-                        if (slot.CheckCompatibility(CR123batteryItem))
-                            battery = CR123batteryItem.CloneItem();
+                        if (slot.CheckCompatibility(CR123Item))
+                            battery = CR123Item.CloneItem();
 
 						if (battery == null) continue;
 
