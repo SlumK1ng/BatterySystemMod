@@ -115,47 +115,5 @@ namespace BatterySystem
 				}
 			}
 		}
-
-		/* Credit to Nexus and Fontaine for showing me this!
-		private static IEnumerator LowerThermalBattery(Player player)
-		{
-			if (player == null)
-			{
-				yield break;
-			}
-
-			while (player.HealthController != null && player.HealthController.IsAlive)
-			{
-				yield return null;
-				ThermalVisionComponent thermalVisionComponent = player.ThermalVisionObserver.GetItemComponent();
-				if (thermalVisionComponent == null)
-				{
-					continue;
-				}
-
-				if (thermalVisionComponent.Togglable.On)
-				{
-					IEnumerable<ResourceComponent> resourceComponents = thermalVisionComponent.Item.GetItemComponentsInChildren<ResourceComponent>(false);
-					foreach (ResourceComponent resourceComponent in resourceComponents)
-					{
-						if (resourceComponent == null)
-						{
-							thermalVisionComponent.Togglable.Set(false);
-							continue;
-						}
-
-						Single targetValue = resourceComponent.Value - Instance.BatteryDrainRate.Value * Time.deltaTime;
-						if (targetValue <= 0f)
-						{
-							targetValue = 0f;
-						}
-
-						if ((resourceComponent.Value = targetValue).IsZero())
-						{
-							thermalVisionComponent.Togglable.Set(false);
-						}
-					}
-				}
-			}*/
 	}
 }
