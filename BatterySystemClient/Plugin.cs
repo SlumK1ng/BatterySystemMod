@@ -42,17 +42,18 @@ namespace BatterySystem
 
 			new PlayerInitPatch().Enable();
 			new AimSightPatch().Enable();
-			//new GetBoneForSlotPatch().Enable();
 			if (BatterySystemConfig.EnableHeadsets.Value)
 				new UpdatePhonesPatch().Enable();
 			new ApplyItemPatch().Enable();
 			new SightDevicePatch().Enable();
-			//new FoldableSightPatch().Enable();
 			new TacticalDevicePatch().Enable();
 			new NvgHeadWearPatch().Enable();
 			new ThermalHeadWearPatch().Enable();
 
-			InvokeRepeating(nameof(DrainBatteries), 1, 1);
+            //new GetBoneForSlotPatch().Enable();
+            //new FoldableSightPatch().Enable();
+
+            InvokeRepeating(nameof(DrainBatteries), 1, 1);
 		}
 
 		public static bool InGame()
