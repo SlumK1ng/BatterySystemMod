@@ -23,11 +23,18 @@ namespace BatterySystem
 	public class BatterySystemPlugin : BaseUnityPlugin
 	{
 		private static float _mainCooldown = 1f;
-		private static Dictionary<string, float> _headWearDrainMultiplier = new Dictionary<string, float>();
-		public static Dictionary<Item, bool> batteryDictionary = new Dictionary<Item, bool>();
-		//resource drain all batteries that are on // using dictionary to help and sync draining batteries
+        public static Dictionary<Item, bool> batteryDictionary = new Dictionary<Item, bool>();
+        private static Dictionary<string, float> _headWearDrainMultiplier = new Dictionary<string, float>
+        {
+            { "5c0696830db834001d23f5da", 1f },// PNV-10T Night Vision Goggles, AA Battery
+            { "5c0558060db834001b735271", 2f },// GPNVG-18 Night Vision goggles, CR123 battery pack
+            { "5c066e3a0db834001b7353f0", 1f },// Armasight N-15 Night Vision Goggles, single CR123A lithium battery
+            { "57235b6f24597759bf5a30f1", 0.5f },// AN/PVS-14 Night Vision Monocular, AA Battery
+            { "5c110624d174af029e69734c", 3f },// T-7 Thermal Goggles with a Night Vision mount, Double AA
+        };
+        //resource drain all batteries that are on // using dictionary to help and sync draining batteries
 
-		public static Inventory localInventory;
+        public static Inventory localInventory;
 
 		public void Awake()
 		{
@@ -44,13 +51,6 @@ namespace BatterySystem
 			new TacticalDevicePatch().Enable();
 			new NvgHeadWearPatch().Enable();
 			new ThermalHeadWearPatch().Enable();
-			{
-				_headWearDrainMultiplier.Add("5c0696830db834001d23f5da", 1f); // PNV-10T Night Vision Goggles, AA Battery
-				_headWearDrainMultiplier.Add("5c0558060db834001b735271", 2f); // GPNVG-18 Night Vision goggles, CR123 battery pack
-				_headWearDrainMultiplier.Add("5c066e3a0db834001b7353f0", 1f); // Armasight N-15 Night Vision Goggles, single CR123A lithium battery
-				_headWearDrainMultiplier.Add("57235b6f24597759bf5a30f1", 0.5f); // AN/PVS-14 Night Vision Monocular, AA Battery
-				_headWearDrainMultiplier.Add("5c110624d174af029e69734c", 3f); // T-7 Thermal Goggles with a Night Vision mount, Double AA
-			}
 		}
 
 		public void Update() // battery is drained in Update() and applied
