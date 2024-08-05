@@ -22,7 +22,6 @@ namespace BatterySystem
 	//[BepInDependency("com.AKI.core", "3.8.0")]
 	public class BatterySystemPlugin : BaseUnityPlugin
 	{
-		private static float _mainCooldown = 1f;
         public static Dictionary<Item, bool> batteryDictionary = new Dictionary<Item, bool>();
         private static Dictionary<string, float> _headWearDrainMultiplier = new Dictionary<string, float>
         {
@@ -52,16 +51,8 @@ namespace BatterySystem
 			new TacticalDevicePatch().Enable();
 			new NvgHeadWearPatch().Enable();
 			new ThermalHeadWearPatch().Enable();
-		}
 
-		public void Update() // battery is drained in Update() and applied
-		{
-			if (Time.time > _mainCooldown && BatterySystemConfig.EnableMod.Value)
-			{
-				_mainCooldown = Time.time + 1f;
-
-				if (InGame()) DrainBatteries();
-			}
+			InvokeRepeating(nameof(DrainBatteries), 1, 1);
 		}
 
 		public static bool InGame()
@@ -72,6 +63,8 @@ namespace BatterySystem
 		//TODO: Throws InvalidOperationException: Collection was modified: enumeration operation may not execute.
 		private static void DrainBatteries()
 		{
+			if (!InGame()) return;
+
 			//here?
 			foreach (Item item in batteryDictionary.Keys)
 			{
