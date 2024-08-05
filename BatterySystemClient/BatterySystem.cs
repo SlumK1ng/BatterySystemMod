@@ -20,7 +20,6 @@ namespace BatterySystem
 {
 	public class BatterySystem
 	{
-		public static ManualLogSource Logger = BepInEx.Logging.Logger.CreateLogSource("BatterySystem");
 		public static Item headWearItem = null;
 		private static NightVisionComponent _headWearNvg = null;
 		private static ThermalVisionComponent _headWearThermal = null;
