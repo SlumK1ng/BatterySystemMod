@@ -22,7 +22,6 @@ namespace BatterySystem
 	{
 		public static FieldInfo nvgOnField = null;
 		public static FieldInfo thermalOnField = null;
-		private static readonly System.Random _random = new System.Random();
 
 		protected override MethodBase GetTargetMethod()
 		{
@@ -86,18 +85,19 @@ namespace BatterySystem
         }
 
 		private static void DrainSpawnedBattery(Item spawnedBattery, Player botPlayer)
-		{
-			//batteries charge depends on their max charge and bot level
-			foreach (ResourceComponent batteryResource in spawnedBattery.GetItemComponentsInChildren<ResourceComponent>())
+        {
+            System.Random random = new System.Random();
+            //batteries charge depends on their max charge and bot level
+            foreach (ResourceComponent batteryResource in spawnedBattery.GetItemComponentsInChildren<ResourceComponent>())
 			{
-				int resourceAvg = _random.Next(0, 5);
+				int resourceAvg = random.Next(0, 5);
 				if (batteryResource.MaxResource > 0)
 				{
 					if (botPlayer.Side != EPlayerSide.Savage)
 					{
 						resourceAvg = (int)(botPlayer.Profile.Info.Level / 150f * batteryResource.MaxResource);
 					}
-                    batteryResource.Value = _random.Next(Mathf.Max(resourceAvg - 10, 0), (int)Mathf.Min(resourceAvg + 5, batteryResource.MaxResource));
+                    batteryResource.Value = random.Next(Mathf.Max(resourceAvg - 10, 0), (int)Mathf.Min(resourceAvg + 5, batteryResource.MaxResource));
 				}
 			}
 		}
