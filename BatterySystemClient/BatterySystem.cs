@@ -82,15 +82,6 @@ namespace BatterySystem
 				if (IsInSlot(deviceController.LightMod.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot)
 					&& !BatterySystemPlugin.batteryDictionary.ContainsKey(deviceController.LightMod.Item))
 					BatterySystemPlugin.batteryDictionary.Add(deviceController.LightMod.Item, lightMods[deviceController]?.Value > 0);
-
-
-			if (BatterySystemConfig.EnableLogs.Value)
-			{
-				Logger.LogInfo("--- BATTERYSYSTEM: Updated battery dictionary: ---");
-				foreach (Item i in BatterySystemPlugin.batteryDictionary.Keys)
-					Logger.LogInfo(i);
-				Logger.LogInfo("---------------------------------------------");
-			}
 		}
 
 		public static void SetEarPieceComponents()
@@ -100,13 +91,6 @@ namespace BatterySystem
 				_earPieceItem = BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Earpiece).Items?.FirstOrDefault();
 				_earPieceBattery = _earPieceItem?.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault();
 				_drainingEarPieceBattery = false;
-				if (BatterySystemConfig.EnableLogs.Value)
-				{
-					Logger.LogInfo("--- BATTERYSYSTEM: Setting EarPiece components at: " + Time.time + " ---");
-					Logger.LogInfo("headWearItem: " + _earPieceItem);
-					Logger.LogInfo("Battery in Earpiece: " + _earPieceBattery?.Item);
-					Logger.LogInfo("Battery Resource: " + _earPieceBattery);
-				}
 				CheckEarPieceIfDraining();
 				UpdateBatteryDictionary();
 			}
@@ -139,14 +123,6 @@ namespace BatterySystem
 
 				if (_earPieceItem != null && BatterySystemPlugin.batteryDictionary.ContainsKey(_earPieceItem))
 					BatterySystemPlugin.batteryDictionary[_earPieceItem] = _drainingEarPieceBattery;
-
-				if (BatterySystemConfig.EnableLogs.Value)
-				{
-					Logger.LogInfo("--- BATTERYSYSTEM: Checking EarPiece battery: " + Time.time + " ---");
-					Logger.LogInfo("EarPiece: " + _earPieceItem);
-					Logger.LogInfo("Battery level " + _earPieceBattery?.Value + ", draining " + _drainingEarPieceBattery);
-					Logger.LogInfo("---------------------------------------------");
-				}
 			}
 		}
 
@@ -157,16 +133,6 @@ namespace BatterySystem
 			_headWearThermal = headWearItem?.GetItemComponentsInChildren<ThermalVisionComponent>().FirstOrDefault(); //default null else thermal item
 			headWearBattery = GetheadWearSight()?.Parent.Item.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault(); //default null else resource
 
-			if (BatterySystemConfig.EnableLogs.Value)
-			{
-				Logger.LogInfo("--- BATTERYSYSTEM: Setting HeadWear components at: " + Time.time + " ---");
-				Logger.LogInfo("headWearItem: " + headWearItem);
-				Logger.LogInfo("headWearNVG: " + _headWearNvg);
-				Logger.LogInfo("headWearParent: " + GetheadWearSight()?.Parent.Item);
-				Logger.LogInfo("headWearThermal: " + _headWearThermal);
-				Logger.LogInfo("Battery in HeadWear: " + headWearBattery?.Item);
-				Logger.LogInfo("Battery Resource: " + headWearBattery);
-			}
 			CheckHeadWearIfDraining();
 			UpdateBatteryDictionary();
 		}
@@ -179,13 +145,6 @@ namespace BatterySystem
 				: (_headWearNvg != null && _headWearThermal == null && _headWearNvg.Togglable.On && !CameraClass.Instance.NightVision.InProcessSwitching));
 			// headWear has battery with resource installed and headwear (nvg/thermal) isn't switching and is on
 
-			if (BatterySystemConfig.EnableLogs.Value)
-			{
-				Logger.LogInfo("--- BATTERYSYSTEM: Checking HeadWear battery: " + Time.time + " ---");
-				Logger.LogInfo("hwItem: " + GetheadWearSight());
-				Logger.LogInfo("Battery level " + headWearBattery?.Value + ", HeadWear_on: " + _drainingHeadWearBattery);
-				Logger.LogInfo("---------------------------------------------");
-			}
 			if (headWearBattery != null && BatterySystemPlugin.batteryDictionary.ContainsKey(GetheadWearSight()))
 				BatterySystemPlugin.batteryDictionary[GetheadWearSight()] = _drainingHeadWearBattery;
 
@@ -212,11 +171,6 @@ namespace BatterySystem
 				return false;
 			}
 
-			if (BatterySystemConfig.EnableLogs.Value)
-			{
-				Logger.LogInfo("--- BATTERYSYSTEM: Setting sight components at " + Time.time + " ---");
-				Logger.LogInfo("For: " + sightInstance.SightMod.Item);
-			}
 			//before applying new sights, remove sights that are not on equipped weapon
 			for (int i = sightMods.Keys.Count - 1; i >= 0; i--)
 			{
@@ -229,8 +183,6 @@ namespace BatterySystem
 
 			if (IsInSlot(sightInstance.SightMod.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot) && _hasBatterySlot(lootItem))
 			{
-				if (BatterySystemConfig.EnableLogs.Value)
-					Logger.LogInfo("Sight Found: " + sightInstance.SightMod.Item);
 				// if sight is already in dictionary, dont add it
 				if (!sightMods.Keys.Any(key => key.SightMod.Item == sightInstance.SightMod.Item)
 					&& (sightInstance.SightMod.Item.Template.Parent._id == "55818acf4bdc2dde698b456b" //compact collimator
@@ -245,10 +197,6 @@ namespace BatterySystem
 		}
 		public static void CheckSightIfDraining()
 		{
-			//ERROR:  If reap-ir is on and using canted collimator, enabled optic sight removes collimator effect. find a way to only drain active sight! /////////////////////////////////////////////////////////
-			if (BatterySystemConfig.EnableLogs.Value)
-				Logger.LogInfo("--- BATTERYSYSTEM: Checking Sight battery at " + Time.time + " ---");
-
 			//for because modifying sightMods[key]
 			for (int i = 0; i < sightMods.Keys.Count; i++)
 			{
@@ -261,9 +209,6 @@ namespace BatterySystem
 
 					if (BatterySystemPlugin.batteryDictionary.ContainsKey(key.SightMod.Item))
 						BatterySystemPlugin.batteryDictionary[key.SightMod.Item] = _drainingSightBattery;
-
-					if (BatterySystemConfig.EnableLogs.Value)
-						Logger.LogInfo("Sight on: " + _drainingSightBattery + " for " + key.name);
 
 					// true for finding inactive gameobject reticles
 					foreach (CollimatorSight col in key.gameObject.GetComponentsInChildren<CollimatorSight>(true))
@@ -289,17 +234,10 @@ namespace BatterySystem
 					}
 				}
 			}
-			if (BatterySystemConfig.EnableLogs.Value)
-				Logger.LogInfo("---------------------------------------------");
 		}
 
 		public static void SetDeviceComponents(TacticalComboVisualController deviceInstance)
 		{
-			if (BatterySystemConfig.EnableLogs.Value)
-			{
-				Logger.LogInfo("--- BATTERYSYSTEM: Setting Tactical Device Components at " + Time.time + " ---");
-				Logger.LogInfo("For: " + deviceInstance.LightMod.Item);
-			}
 			//before applying new sights, remove sights that are not on equipped weapon
 			for (int i = lightMods.Keys.Count - 1; i >= 0; i--)
 			{
@@ -312,8 +250,6 @@ namespace BatterySystem
 
 			if (IsInSlot(deviceInstance.LightMod.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot))
 			{
-				if (BatterySystemConfig.EnableLogs.Value)
-					Logger.LogInfo("Device Found: " + deviceInstance.LightMod.Item);
 				// if sight is already in dictionary, dont add it
 				if (!lightMods.Keys.Any(key => key.LightMod.Item == deviceInstance.LightMod.Item)
 					&& (deviceInstance.LightMod.Item.Template.Parent._id == "55818b084bdc2d5b648b4571" //flashlight
@@ -328,9 +264,6 @@ namespace BatterySystem
 		}
 		public static void CheckDeviceIfDraining()
 		{
-			if (BatterySystemConfig.EnableLogs.Value)
-				Logger.LogInfo("--- BATTERYSYSTEM: Checking Tactical Device battery at " + Time.time + " ---");
-
 			for (int i = 0; i < lightMods.Keys.Count; i++)
 			{
 				TacticalComboVisualController key = lightMods.Keys.ElementAt(i);
@@ -343,9 +276,6 @@ namespace BatterySystem
 					if (BatterySystemPlugin.batteryDictionary.ContainsKey(key.LightMod.Item))
 						BatterySystemPlugin.batteryDictionary[key.LightMod.Item] = _drainingSightBattery;
 
-					if (BatterySystemConfig.EnableLogs.Value)
-						Logger.LogInfo("Light on: " + _drainingSightBattery + " for " + key.name);
-
 					// true for finding inactive gameobject reticles
 					foreach (LaserBeam laser in key.gameObject.GetComponentsInChildren<LaserBeam>(true))
 					{
@@ -357,8 +287,6 @@ namespace BatterySystem
 					}
 				}
 			}
-			if (BatterySystemConfig.EnableLogs.Value)
-				Logger.LogInfo("---------------------------------------------");
 		}
 	}
 }

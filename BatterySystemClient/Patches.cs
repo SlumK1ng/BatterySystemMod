@@ -35,8 +35,6 @@ namespace BatterySystem
 		public static async void Postfix(Player __instance, Task __result)
 		{
 			await __result;
-			if (BatterySystemConfig.EnableLogs.Value)
-				Logger.LogInfo("PlayerInitPatch AT " + Time.time + ", IsYourPlayer: " + __instance.IsYourPlayer + ", ID: " + __instance.FullIdInfo);
 
 			if (__instance.IsYourPlayer)
 			{
@@ -181,15 +179,6 @@ namespace BatterySystem
 				_gClass.Bone = null;
 				_gClass.Item = null;
 				_gClass.ItemView = null;
-				if (BatterySystemConfig.EnableLogs.Value)
-				{
-					Logger.LogInfo("--- BatterySystem: GetBoneForSlot at " + Time.time + " ---");
-					Logger.LogInfo("GameObject: " + __instance.GameObject);
-					Logger.LogInfo(" Container: " + container);
-					Logger.LogInfo("Items: " + container.Items.FirstOrDefault());
-					Logger.LogWarning("Trying to get bone for battery slot!");
-					Logger.LogInfo("---------------------------------------------");
-				}
 				__instance.ContainerBones.Add(container, _gClass);
 			}
 		}
@@ -206,8 +195,6 @@ namespace BatterySystem
 		{
 			if (BatterySystemPlugin.InGame() && __instance.IsYourPlayer)
 			{
-				if (BatterySystemConfig.EnableLogs.Value)
-					Logger.LogInfo("UpdatePhonesPatch at " + Time.time);
 				Singleton<BetterAudio>.Instance.Master.GetFloat("Compressor", out BatterySystem.compressor);
 				Singleton<BetterAudio>.Instance.Master.GetFloat("CompressorMakeup", out BatterySystem.compressorMakeup);
 				BatterySystem.SetEarPieceComponents();
@@ -227,30 +214,18 @@ namespace BatterySystem
 		{
 			if (BatterySystemPlugin.InGame() && __instance.ContainedItem.ParentRecursiveCheck(BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Headwear).ParentItem))
 			{
-				if (BatterySystemConfig.EnableLogs.Value)
-				{
-					Logger.LogInfo("BATTERYSYSTEM: ApplyItemPatch at: " + Time.time);
-					Logger.LogInfo("Slot parent: " + __instance.ParentItem);
-				}
 				if (BatterySystem.IsInSlot(__instance.ContainedItem, BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Earpiece)))
 				{
-					if (BatterySystemConfig.EnableLogs.Value)
-						Logger.LogInfo("Slot is child of EarPiece!");
-
 					BatterySystem.SetEarPieceComponents();
 					return;
 				}
 				else if (BatterySystem.IsInSlot(__instance.ParentItem, BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Headwear)))
 				{ //if item in headwear slot applied
-					if (BatterySystemConfig.EnableLogs.Value)
-						Logger.LogInfo("Slot is child of HeadWear!");
 					BatterySystem.SetHeadWearComponents();
 					return;
 				}
 				else if (BatterySystem.IsInSlot(__instance.ContainedItem, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot))
 				{ // if sight is removed and empty slot is applied, then remove the sight from sightdb
-					if (BatterySystemConfig.EnableLogs.Value)
-						Logger.LogInfo("Slot is child of ActiveSlot!");
 					BatterySystem.CheckDeviceIfDraining();
 					BatterySystem.CheckSightIfDraining();
 					return;

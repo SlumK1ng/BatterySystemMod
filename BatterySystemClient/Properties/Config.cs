@@ -5,7 +5,6 @@ namespace BatterySystem.Configs
 	internal class BatterySystemConfig
 	{
 		public static ConfigEntry<bool> EnableMod { get; private set; }
-		public static ConfigEntry<bool> EnableLogs { get; private set; }
 		public static ConfigEntry<float> DrainMultiplier { get; private set; }
 		public static ConfigEntry<bool> EnableHeadsets { get; private set; }
 		public static ConfigEntry<bool> AutoUnfold { get; private set; }
@@ -30,11 +29,6 @@ namespace BatterySystem.Configs
 					new ConfigDescription("Enable BatterySystem for headsets. Disable this if your headsets behave weirdly with other mods such as Realism. Requires restart.",
 					null,
 					new ConfigurationManagerAttributes { IsAdvanced = false, Order = 75 }));
-
-				EnableLogs = Config.Bind(generalSettings, "Enable Logs", false,
-					new ConfigDescription("Enable or disable logging.",
-					null,
-					new ConfigurationManagerAttributes { IsAdvanced = true, Order = 50 }));
 
 				DrainMultiplier = Config.Bind(generalSettings, "Battery Drain Multiplier", 1f,
 					new ConfigDescription("Adjust the drain multiplier when NVG is on. By default a battery lasts an hour on NVGs and 2.5 hours on collimators.",
