@@ -49,9 +49,12 @@ namespace BatterySystem
 
 		public static bool IsInSlot(Item item, Slot slot)
 		{
-			if (item != null && slot?.ContainedItem != null && item.IsChildOf(slot.ContainedItem)) return true;
-			else return false;
-		}
+			if (item == null) return false;
+            if (slot == null) return false;
+            if (slot.ContainedItem == null) return false;
+
+			return item.IsChildOf(slot.ContainedItem);
+        }
 
 		public static void UpdateBatteryDictionary()
 		{
