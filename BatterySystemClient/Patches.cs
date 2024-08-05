@@ -49,7 +49,7 @@ namespace BatterySystem
 				BatterySystem.SetEarPieceComponents();
 				//__instance.OnSightChangedEvent -= sight => BatterySystem.CheckSightIfDraining();
 			}
-			else if(__instance.IsAI)//Spawned bots have their batteries drained
+			else//Spawned bots have their batteries drained
             {
                 //Delay draining batteries a bit, to allow mods like Realism-Mod to generate them first
                 await Task.Delay(1000);
