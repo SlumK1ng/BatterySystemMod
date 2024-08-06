@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace BatterySystem
 {
-    internal class HeadsetBatteries
+    public class HeadsetBatteries
     {
         private static Item headsetItem = null;
         private static ResourceComponent headsetBattery = null;
