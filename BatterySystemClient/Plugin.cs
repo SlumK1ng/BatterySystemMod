@@ -45,7 +45,7 @@ namespace BatterySystem
             //new GetBoneForSlotPatch().Enable();
             //new FoldableSightPatch().Enable();
 
-            InvokeRepeating(nameof(DrainBatteries), 1, 1);
+            InvokeRepeating(nameof(Heartbeat), 1, 1);
 		}
 
 		//TODO: Throws InvalidOperationException: Collection was modified: enumeration operation may not execute.
@@ -54,7 +54,8 @@ namespace BatterySystem
 			if (!InGame()) return;
 
 			//here?
-			foreach (Item item in batteryDictionary.Keys)
+			var batteryKeys = batteryDictionary.Keys.ToArray();
+            foreach (Item item in batteryKeys)
 			{
 				if (!batteryDictionary[item]) continue;
 

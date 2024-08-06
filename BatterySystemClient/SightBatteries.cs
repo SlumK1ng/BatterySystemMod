@@ -73,7 +73,7 @@ namespace BatterySystem
         public static void CheckSightIfDraining()
         {
             //for because modifying sightMods[key]
-            var keys = sightMods.Keys;
+            var keys = sightMods.Keys.ToArray();
             foreach (SightModVisualControllers key in keys)
             {
                 if (key?.SightMod?.Item != null)

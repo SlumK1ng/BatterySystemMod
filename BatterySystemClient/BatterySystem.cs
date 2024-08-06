@@ -26,8 +26,8 @@ namespace BatterySystem
         public static void UpdateBatteryDictionary()
 		{
 			// Remove unequipped items
-			var keys = BatterySystemPlugin.batteryDictionary.Keys;
-            foreach (Item key in keys)
+			var batteryKeys = BatterySystemPlugin.batteryDictionary.Keys.ToArray();
+            foreach (Item key in batteryKeys)
 			{
 				if (IsInSlot(key, BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Earpiece))) continue;
                 if (IsInSlot(key, BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Headwear))) continue;
@@ -40,7 +40,8 @@ namespace BatterySystem
 			HeadwearBatteries.TrackBatteries();
 			SightBatteries.TrackBatteries();
 
-			foreach (TacticalComboVisualController deviceController in lightMods.Keys) // tactical devices on active weapon
+            var lightModKeys = lightMods.Keys.ToArray();
+            foreach (TacticalComboVisualController deviceController in lightModKeys) // tactical devices on active weapon
 				if (IsInSlot(deviceController.LightMod.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot)
 					&& !BatterySystemPlugin.batteryDictionary.ContainsKey(deviceController.LightMod.Item))
 					BatterySystemPlugin.batteryDictionary.Add(deviceController.LightMod.Item, lightMods[deviceController]?.Value > 0);
