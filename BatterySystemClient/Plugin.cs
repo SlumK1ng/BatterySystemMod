@@ -73,7 +73,8 @@ namespace BatterySystem
 					{
 						item.GetItemComponentsInChildren<ResourceComponent>(false).First().Value = 0f;
 						if (item.IsChildOf(BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Earpiece).ContainedItem))
-							BatterySystem.CheckEarPieceIfDraining();
+							HeadsetBatteries.CheckEarPieceIfDraining();
+
 						else if (item.IsChildOf(Singleton<GameWorld>.Instance.MainPlayer?.ActiveSlot.ContainedItem))
 						{
 							BatterySystem.CheckDeviceIfDraining();

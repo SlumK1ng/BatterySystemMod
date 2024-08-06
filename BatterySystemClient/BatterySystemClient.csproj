@@ -87,6 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BatterySystem.cs" />
+    <Compile Include="HeadsetBatteries.cs" />
     <Compile Include="Patches.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

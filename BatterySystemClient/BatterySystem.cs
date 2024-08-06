@@ -20,12 +20,6 @@ namespace BatterySystem
 {
 	public class BatterySystem
 	{
-		private static Item _earPieceItem = null;
-		private static ResourceComponent _earPieceBattery = null;
-		private static bool _drainingEarPieceBattery = false;
-		public static float compressorMakeup;
-		// compressor is used because the default 
-		public static float compressor;
 
 		public static Dictionary<SightModVisualControllers, ResourceComponent> sightMods = new Dictionary<SightModVisualControllers, ResourceComponent>();
 		public static Dictionary<TacticalComboVisualController, ResourceComponent> lightMods = new Dictionary<TacticalComboVisualController, ResourceComponent>();
@@ -44,10 +38,7 @@ namespace BatterySystem
 				BatterySystemPlugin.batteryDictionary.Remove(key);
 			}
 
-			if (BatterySystemConfig.EnableHeadsets.Value && _earPieceItem != null
-				&& !BatterySystemPlugin.batteryDictionary.ContainsKey(_earPieceItem)) // earpiece
-				BatterySystemPlugin.batteryDictionary.Add(_earPieceItem, _drainingEarPieceBattery);
-
+			HeadsetBatteries.TrackBatteries();
 			HeadwearBatteries.TrackBatteries();
 
             foreach (SightModVisualControllers sightController in sightMods.Keys) // sights on active weapon
@@ -59,48 +50,6 @@ namespace BatterySystem
 				if (IsInSlot(deviceController.LightMod.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot)
 					&& !BatterySystemPlugin.batteryDictionary.ContainsKey(deviceController.LightMod.Item))
 					BatterySystemPlugin.batteryDictionary.Add(deviceController.LightMod.Item, lightMods[deviceController]?.Value > 0);
-		}
-
-		public static void SetEarPieceComponents()
-		{
-			if (BatterySystemConfig.EnableHeadsets.Value)
-			{
-				_earPieceItem = BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Earpiece).Items?.FirstOrDefault();
-				_earPieceBattery = _earPieceItem?.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault();
-				_drainingEarPieceBattery = false;
-				CheckEarPieceIfDraining();
-				UpdateBatteryDictionary();
-			}
-		}
-
-		public static void CheckEarPieceIfDraining()
-		{
-			if (BatterySystemConfig.EnableHeadsets.Value)
-			{
-				//headset has charged battery installed
-				if (_earPieceBattery != null && _earPieceBattery.Value > 0)
-				{
-					MethodInvoker.GetHandler(AccessTools.Method(typeof(Player), "UpdatePhonesReally"));
-					_drainingEarPieceBattery = true;
-				}
-				//headset has no battery
-				else if (_earPieceItem != null)
-				{
-					Singleton<BetterAudio>.Instance.Master.SetFloat("CompressorMakeup", 0f);
-					Singleton<BetterAudio>.Instance.Master.SetFloat("Compressor", compressor - 15f);
-					Singleton<BetterAudio>.Instance.Master.SetFloat("MainVolume", -10f);
-					_drainingEarPieceBattery = false;
-				}
-				//no headset equipped
-				else
-				{
-					MethodInvoker.GetHandler(AccessTools.Method(typeof(Player), "UpdatePhonesReally"));
-					_drainingEarPieceBattery = false;
-				}
-
-				if (_earPieceItem != null && BatterySystemPlugin.batteryDictionary.ContainsKey(_earPieceItem))
-					BatterySystemPlugin.batteryDictionary[_earPieceItem] = _drainingEarPieceBattery;
-			}
 		}
 
 		public static void SetSightComponents(SightModVisualControllers sightInstance)

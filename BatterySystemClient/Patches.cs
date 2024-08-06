@@ -35,7 +35,7 @@ namespace BatterySystem
 				BatterySystemPlugin.localInventory = __instance.InventoryControllerClass.Inventory; //Player Inventory
 				BatterySystem.sightMods.Clear(); // remove old sight entries that were saved from previous raid
 				BatterySystem.lightMods.Clear(); // same for tactical devices
-				BatterySystem.SetEarPieceComponents();
+                HeadsetBatteries.SetEarPieceComponents();
 				//__instance.OnSightChangedEvent -= sight => BatterySystem.CheckSightIfDraining();
 			}
 			else//Spawned bots have their batteries drained
@@ -178,25 +178,6 @@ namespace BatterySystem
 			}
 		}
 	}*/
-
-	public class UpdatePhonesPatch : ModulePatch
-	{
-		protected override MethodBase GetTargetMethod()
-		{
-			return typeof(Player).GetMethod(nameof(Player.UpdatePhones));
-		}
-		[PatchPostfix]
-		public static void PatchPostfix(ref Player __instance) //BetterAudio __instance
-		{
-			if (BatterySystemPlugin.InGame() && __instance.IsYourPlayer)
-			{
-				Singleton<BetterAudio>.Instance.Master.GetFloat("Compressor", out BatterySystem.compressor);
-				Singleton<BetterAudio>.Instance.Master.GetFloat("CompressorMakeup", out BatterySystem.compressorMakeup);
-				BatterySystem.SetEarPieceComponents();
-			}
-		}
-	}
-
 	public class ApplyItemPatch : ModulePatch
 	{
 		protected override MethodBase GetTargetMethod()
@@ -211,7 +192,7 @@ namespace BatterySystem
 			{
 				if (BatterySystem.IsInSlot(__instance.ContainedItem, BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Earpiece)))
 				{
-					BatterySystem.SetEarPieceComponents();
+                    HeadsetBatteries.SetEarPieceComponents();
 					return;
 				}
 				else if (BatterySystem.IsInSlot(__instance.ParentItem, BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Headwear)))
@@ -225,7 +206,7 @@ namespace BatterySystem
 					BatterySystem.CheckSightIfDraining();
 					return;
 				}
-				BatterySystem.SetEarPieceComponents();
+                HeadsetBatteries.SetEarPieceComponents();
                 HeadwearBatteries.SetHeadWearComponents();
 			}
 		}
