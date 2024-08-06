@@ -48,8 +48,10 @@ namespace BatterySystem
             InvokeRepeating(nameof(Heartbeat), 1, 1);
 		}
 
-		//TODO: Throws InvalidOperationException: Collection was modified: enumeration operation may not execute.
-		private static void DrainBatteries()
+		//Gets called every second
+		private void Heartbeat() => DrainBatteries();
+
+        private static void DrainBatteries()
 		{
 			if (!InGame()) return;
 
