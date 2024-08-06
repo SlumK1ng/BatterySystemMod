@@ -33,7 +33,7 @@ namespace BatterySystem
 			if (__instance.IsYourPlayer)
 			{
 				BatterySystemPlugin.localInventory = __instance.InventoryControllerClass.Inventory; //Player Inventory
-				BatterySystem.sightMods.Clear(); // remove old sight entries that were saved from previous raid
+                SightBatteries.sightMods.Clear(); // remove old sight entries that were saved from previous raid
 				BatterySystem.lightMods.Clear(); // same for tactical devices
                 HeadsetBatteries.SetEarPieceComponents();
 				//__instance.OnSightChangedEvent -= sight => BatterySystem.CheckSightIfDraining();
@@ -96,88 +96,6 @@ namespace BatterySystem
 		}
 	}
 
-	//Check weapon sight when aiming down
-	public class AimSightPatch : ModulePatch
-	{
-		//private static Type _pwaType;
-		private static FieldInfo _firearmControllerField;
-		private static MethodInfo _updateAimMethod;
-
-		protected override MethodBase GetTargetMethod()
-		{
-			//Gives ProceduralWeaponAnimation type
-			//unnecessary.
-			//_pwaType = PatchConstants.EftTypes.Single(type => type.Name == "ProceduralWeaponAnimation");
-			//TODO: use reflection instead of gclass
-			_firearmControllerField = AccessTools.Field(typeof(ProceduralWeaponAnimation), "_firearmController");
-			/* Unnecessary reflection.
-			_firearmDataField = AccessTools.GetDeclaredFields(_pwaType).FirstOrDefault(field =>
-		{
-			return field.FieldType.Equals(typeof(Player.FirearmController));
-		});*/
-			
-			//Finds a method that has a (bool forced = false) parameter. Works in 3.8.0
-			//necessary, is method_NUM where NUM changes between patches.
-			_updateAimMethod = AccessTools.GetDeclaredMethods(typeof(ProceduralWeaponAnimation)).FirstOrDefault(method =>
-			{
-				var parameters = method.GetParameters();
-				return parameters.Length == 1 && parameters[0].Name == "forced" && parameters[0].ParameterType == typeof(bool);
-			});
-
-			return _updateAimMethod;
-		}
-
-		[PatchPostfix]
-		public static void Postfix(ref ProceduralWeaponAnimation __instance)
-		{
-			if (__instance == null) return;
-
-			var playerField = (Player.FirearmController)_firearmControllerField.GetValue(__instance);
-			if (!BatterySystemPlugin.InGame()) return;
-			if (playerField == null) return;
-			if (playerField.Weapon == null) return;
-
-			Player weaponOwnerPlayer = Singleton<GameWorld>.Instance.GetAlivePlayerByProfileID(playerField.Weapon.Owner.ID);
-			if (weaponOwnerPlayer == null) return;
-			if (!weaponOwnerPlayer.IsYourPlayer) return;
-			
-			BatterySystem.CheckSightIfDraining();
-		}
-	}
-	//Throws NullRefError?
-	//UNNECESSARY???? WHAT
-	// Adds dummy bones for weapon modding window.
-	//TODO: Use reflection instead of gclass
-	/*
-	public class GetBoneForSlotPatch : ModulePatch
-	{
-		private static GClass674.GClass675 _gClass = new GClass674.GClass675();
-		private static Type _gClassType;
-		private static string _methodName = "GetBoneForSlot";
-		protected override MethodBase GetTargetMethod()
-		{
-			_gClassType = PatchConstants.EftTypes.Single(type => {
-				//If type has a method called _methodName, select the type
-				string methodInfo = AccessTools.GetMethodNames(type)
-				.FirstOrDefault(name => name.Equals(_methodName));
-				return methodInfo != null; 
-			});
-			Logger.LogWarning(_gClassType.FullName);
-			return AccessTools.Method(_gClassType, _methodName);
-		}
-
-		[PatchPrefix]
-		public static void Prefix(ref GClass674 __instance, IContainer container)
-		{
-			if (!__instance.ContainerBones.ContainsKey(container) && container.ID == "mod_equipment")
-			{
-				_gClass.Bone = null;
-				_gClass.Item = null;
-				_gClass.ItemView = null;
-				__instance.ContainerBones.Add(container, _gClass);
-			}
-		}
-	}*/
 	public class ApplyItemPatch : ModulePatch
 	{
 		protected override MethodBase GetTargetMethod()
@@ -203,7 +121,7 @@ namespace BatterySystem
 				else if (BatterySystem.IsInSlot(__instance.ContainedItem, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot))
 				{ // if sight is removed and empty slot is applied, then remove the sight from sightdb
 					BatterySystem.CheckDeviceIfDraining();
-					BatterySystem.CheckSightIfDraining();
+					SightBatteries.CheckSightIfDraining();
 					return;
 				}
                 HeadsetBatteries.SetEarPieceComponents();
@@ -211,42 +129,6 @@ namespace BatterySystem
 			}
 		}
 	}
-
-	public class SightDevicePatch : ModulePatch
-	{
-		protected override MethodBase GetTargetMethod()
-		{
-			return typeof(SightModVisualControllers).GetMethod(nameof(SightModVisualControllers.UpdateSightMode));
-		}
-
-		[PatchPostfix]
-		static void Postfix(ref SightModVisualControllers __instance)
-		{
-			//only sights on equipped weapon are added
-			if (BatterySystemPlugin.InGame() && BatterySystem.IsInSlot(__instance.SightMod.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot))
-			{
-				BatterySystem.SetSightComponents(__instance);
-			}
-		}
-	}
-
-	/*
-	public class FoldableSightPatch : ModulePatch
-	{
-		protected override MethodBase GetTargetMethod()
-		{
-			return typeof(ProceduralWeaponAnimation).GetMethod("FindAimTransforms");
-		}
-		[PatchPostfix]
-		static void Postfix(ref ProceduralWeaponAnimation __instance)
-		{
-			if (BatterySystemConfig.AutoUnfold.Value)
-				if (BatterySystemConfig.EnableLogs.Value)
-					Logger.LogInfo("FindAimTransforms at " + Time.time);
-			//AutofoldableSight.On == On when folds, unfold false
-			//Invoke a method that folds sight when adding a sight to a weapon.
-		}
-	}*/
 
 	public class TacticalDevicePatch : ModulePatch
 	{
