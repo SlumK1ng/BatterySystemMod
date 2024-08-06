@@ -23,14 +23,6 @@ namespace BatterySystem
 	public class BatterySystemPlugin : BaseUnityPlugin
 	{
         public static Dictionary<Item, bool> batteryDictionary = new Dictionary<Item, bool>();
-        private static Dictionary<string, float> _headWearDrainMultiplier = new Dictionary<string, float>
-        {
-            { "5c0696830db834001d23f5da", 1f },// PNV-10T Night Vision Goggles, AA Battery
-            { "5c0558060db834001b735271", 2f },// GPNVG-18 Night Vision goggles, CR123 battery pack
-            { "5c066e3a0db834001b7353f0", 1f },// Armasight N-15 Night Vision Goggles, single CR123A lithium battery
-            { "57235b6f24597759bf5a30f1", 0.5f },// AN/PVS-14 Night Vision Monocular, AA Battery
-            { "5c110624d174af029e69734c", 3f },// T-7 Thermal Goggles with a Night Vision mount, Double AA
-        };
         //resource drain all batteries that are on // using dictionary to help and sync draining batteries
 
         public static Inventory localInventory;
@@ -67,21 +59,9 @@ namespace BatterySystem
 				if (!batteryDictionary[item]) continue;
 
 				// Drain headwear NVG/Thermal
-				if (BatterySystem.headWearBattery != null && item.IsChildOf(BatterySystem.headWearItem)
-					&& BatterySystem.headWearItem.GetItemComponentsInChildren<TogglableComponent>().FirstOrDefault()?.On == true)
-				{
-					//Default battery lasts 1 hr * configmulti * itemmulti, itemmulti was Hazelify's idea!
-					BatterySystem.headWearBattery.Value -= Mathf.Clamp(1 / 36f
-							* BatterySystemConfig.DrainMultiplier.Value
-							* _headWearDrainMultiplier[BatterySystem.GetheadWearSight()?.TemplateId], 0f, 100f);
-					if (item.GetItemComponentsInChildren<ResourceComponent>(false).First().Value < 0f)
-					{
-						item.GetItemComponentsInChildren<ResourceComponent>(false).First().Value = 0f;
-						if (item.IsChildOf(BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Headwear).ContainedItem))
-							BatterySystem.CheckHeadWearIfDraining();
+				if (item.IsChildOf(HeadwearBatteries.headWearItem))
+					HeadwearBatteries.Drain(item);
 
-					}
-				}
 				//for sights, earpiece and tactical devices
 				else if (item.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault() != null)
 				{

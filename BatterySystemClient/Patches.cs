@@ -20,14 +20,8 @@ namespace BatterySystem
 {
 	public class PlayerInitPatch : ModulePatch
 	{
-		public static FieldInfo nvgOnField = null;
-		public static FieldInfo thermalOnField = null;
-
 		protected override MethodBase GetTargetMethod()
 		{
-			nvgOnField = AccessTools.Field(typeof(NightVision), "_on");
-			thermalOnField = AccessTools.Field(typeof(ThermalVision), "On");
-
 			return AccessTools.Method(typeof(Player), "Init");
 		}
 
@@ -91,6 +85,7 @@ namespace BatterySystem
 				int resourceAvg = random.Next(0, 5);
 				if (batteryResource.MaxResource > 0)
 				{
+					//TODO simplify & configurable avg value
 					if (botPlayer.Side != EPlayerSide.Savage)
 					{
 						resourceAvg = (int)(botPlayer.Profile.Info.Level / 150f * batteryResource.MaxResource);
@@ -221,7 +216,7 @@ namespace BatterySystem
 				}
 				else if (BatterySystem.IsInSlot(__instance.ParentItem, BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Headwear)))
 				{ //if item in headwear slot applied
-					BatterySystem.SetHeadWearComponents();
+					HeadwearBatteries.SetHeadWearComponents();
 					return;
 				}
 				else if (BatterySystem.IsInSlot(__instance.ContainedItem, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot))
@@ -231,7 +226,7 @@ namespace BatterySystem
 					return;
 				}
 				BatterySystem.SetEarPieceComponents();
-				BatterySystem.SetHeadWearComponents();
+                HeadwearBatteries.SetHeadWearComponents();
 			}
 		}
 	}
@@ -288,63 +283,6 @@ namespace BatterySystem
 			{
 				BatterySystem.SetDeviceComponents(__instance);
 			}
-		}
-	}
-
-	public class NvgHeadWearPatch : ModulePatch
-	{
-		protected override MethodBase GetTargetMethod()
-		{
-			return typeof(NightVision).GetMethod(nameof(NightVision.StartSwitch));
-		}
-
-		[PatchPostfix]
-		static void Postfix(ref NightVision __instance)
-		{
-			if (__instance.name == "FPS Camera" && BatterySystemPlugin.InGame())
-			{
-				if (__instance.InProcessSwitching)
-					StaticManager.BeginCoroutine(IsNVSwitching(__instance));
-				else BatterySystem.SetHeadWearComponents();
-			}
-		}
-		//waits until InProcessSwitching is false and then 
-		private static IEnumerator IsNVSwitching(NightVision nv)
-		{
-			while (nv.InProcessSwitching)
-			{
-				yield return new WaitForSeconds(1f / 100f);
-			}
-			BatterySystem.SetHeadWearComponents();
-			yield break;
-		}
-	}
-
-	public class ThermalHeadWearPatch : ModulePatch
-	{
-		protected override MethodBase GetTargetMethod()
-		{
-			return typeof(ThermalVision).GetMethod(nameof(ThermalVision.StartSwitch));
-		}
-
-		[PatchPostfix]
-		static void Postfix(ref ThermalVision __instance)
-		{
-			if (__instance.name == "FPS Camera" && BatterySystemPlugin.InGame())
-			{
-				if (__instance.InProcessSwitching)
-					StaticManager.BeginCoroutine(IsThermalSwitching(__instance));
-				else BatterySystem.SetHeadWearComponents();
-			}
-		}
-		private static IEnumerator IsThermalSwitching(ThermalVision tv)
-		{
-			while (tv.InProcessSwitching)
-			{
-				yield return new WaitForSeconds(1f / 100f);
-			}
-			BatterySystem.SetHeadWearComponents();
-			yield break;
 		}
 	}
 }

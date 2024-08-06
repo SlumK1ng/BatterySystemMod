@@ -20,12 +20,6 @@ namespace BatterySystem
 {
 	public class BatterySystem
 	{
-		public static Item headWearItem = null;
-		private static NightVisionComponent _headWearNvg = null;
-		private static ThermalVisionComponent _headWearThermal = null;
-		private static bool _drainingHeadWearBattery = false;
-		public static ResourceComponent headWearBattery = null;
-
 		private static Item _earPieceItem = null;
 		private static ResourceComponent _earPieceBattery = null;
 		private static bool _drainingEarPieceBattery = false;
@@ -36,16 +30,6 @@ namespace BatterySystem
 		public static Dictionary<SightModVisualControllers, ResourceComponent> sightMods = new Dictionary<SightModVisualControllers, ResourceComponent>();
 		public static Dictionary<TacticalComboVisualController, ResourceComponent> lightMods = new Dictionary<TacticalComboVisualController, ResourceComponent>();
 		private static bool _drainingSightBattery;
-
-		public static Item GetheadWearSight() // returns the special device goggles that are equipped
-		{
-			if (_headWearNvg != null)
-				return _headWearNvg.Item;
-			else if (_headWearThermal != null)
-				return _headWearThermal.Item;
-			else
-				return null;
-		}
 
 		public static void UpdateBatteryDictionary()
 		{
@@ -64,10 +48,9 @@ namespace BatterySystem
 				&& !BatterySystemPlugin.batteryDictionary.ContainsKey(_earPieceItem)) // earpiece
 				BatterySystemPlugin.batteryDictionary.Add(_earPieceItem, _drainingEarPieceBattery);
 
-			if (GetheadWearSight() != null && !BatterySystemPlugin.batteryDictionary.ContainsKey(GetheadWearSight())) // headwear
-				BatterySystemPlugin.batteryDictionary.Add(GetheadWearSight(), _drainingHeadWearBattery);
+			HeadwearBatteries.TrackBatteries();
 
-			foreach (SightModVisualControllers sightController in sightMods.Keys) // sights on active weapon
+            foreach (SightModVisualControllers sightController in sightMods.Keys) // sights on active weapon
 				if (IsInSlot(sightController.SightMod.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot)
 					&& !BatterySystemPlugin.batteryDictionary.ContainsKey(sightController.SightMod.Item))
 					BatterySystemPlugin.batteryDictionary.Add(sightController.SightMod.Item, sightMods[sightController]?.Value > 0);
@@ -118,35 +101,6 @@ namespace BatterySystem
 				if (_earPieceItem != null && BatterySystemPlugin.batteryDictionary.ContainsKey(_earPieceItem))
 					BatterySystemPlugin.batteryDictionary[_earPieceItem] = _drainingEarPieceBattery;
 			}
-		}
-
-		public static void SetHeadWearComponents()
-		{
-			headWearItem = BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Headwear).Items?.FirstOrDefault(); // default null else headwear
-			_headWearNvg = headWearItem?.GetItemComponentsInChildren<NightVisionComponent>().FirstOrDefault(); //default null else nvg item
-			_headWearThermal = headWearItem?.GetItemComponentsInChildren<ThermalVisionComponent>().FirstOrDefault(); //default null else thermal item
-			headWearBattery = GetheadWearSight()?.Parent.Item.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault(); //default null else resource
-
-			CheckHeadWearIfDraining();
-			UpdateBatteryDictionary();
-		}
-
-		public static void CheckHeadWearIfDraining()
-		{
-			_drainingHeadWearBattery = headWearBattery != null && headWearBattery.Value > 0
-				&& (_headWearNvg == null && _headWearThermal != null
-				? (_headWearThermal.Togglable.On && !CameraClass.Instance.ThermalVision.InProcessSwitching)
-				: (_headWearNvg != null && _headWearThermal == null && _headWearNvg.Togglable.On && !CameraClass.Instance.NightVision.InProcessSwitching));
-			// headWear has battery with resource installed and headwear (nvg/thermal) isn't switching and is on
-
-			if (headWearBattery != null && BatterySystemPlugin.batteryDictionary.ContainsKey(GetheadWearSight()))
-				BatterySystemPlugin.batteryDictionary[GetheadWearSight()] = _drainingHeadWearBattery;
-
-			if (_headWearNvg != null)
-				PlayerInitPatch.nvgOnField.SetValue(CameraClass.Instance.NightVision, _drainingHeadWearBattery);
-
-			else if (_headWearThermal != null)
-				PlayerInitPatch.thermalOnField.SetValue(CameraClass.Instance.ThermalVision, _drainingHeadWearBattery);
 		}
 
 		public static void SetSightComponents(SightModVisualControllers sightInstance)
