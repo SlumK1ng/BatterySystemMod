@@ -40,6 +40,7 @@ namespace BatterySystem
             headWearBattery = GetHeadwearSight()?.Parent.Item.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault(); //default null else resource
 
             CheckHeadWearIfDraining();
+            BatterySystem.UpdateBatteryDictionary();
         }
 
         public static void TrackBatteries()
