@@ -81,16 +81,16 @@ namespace BatterySystem
             if (headWearItem.GetItemComponentsInChildren<ITogglableComponent>().FirstOrDefault().On == false) return;
 
             //Default battery lasts 1 hr * configmulti * itemmulti, itemmulti was Hazelify's idea!
-            HeadwearBatteries.headWearBattery.Value -= Mathf.Clamp(1 / 36f
+            headWearBattery.Value -= Mathf.Clamp(1 / 36f
                     * BatterySystemConfig.DrainMultiplier.Value
-                    * itemDrainMultiplier[HeadwearBatteries.GetHeadwearSight()?.TemplateId],
+                    * itemDrainMultiplier[GetHeadwearSight()?.TemplateId],
                     0f, 100f);
 
             if (batteryItem.GetItemComponentsInChildren<ResourceComponent>(false).First().Value < 0f)
             {
                 batteryItem.GetItemComponentsInChildren<ResourceComponent>(false).First().Value = 0f;
                 if (batteryItem.IsChildOf(BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Headwear).ContainedItem))
-                    HeadwearBatteries.CheckHeadWearIfDraining();
+                    CheckHeadWearIfDraining();
             }
         }
     }
