@@ -63,8 +63,8 @@ namespace BatterySystem
         {
             _drainingHeadWearBattery = headWearBattery != null && headWearBattery.Value > 0
                 && (_headWearNvg == null && _headWearThermal != null
-                ? (_headWearThermal.Togglable.On && !CameraClass.Instance.ThermalVision.InProcessSwitching)
-                : (_headWearNvg != null && _headWearThermal == null && _headWearNvg.Togglable.On && !CameraClass.Instance.NightVision.InProcessSwitching));
+                ? (((ITogglableComponentContainer)_headWearThermal).Togglable.On && !CameraClass.Instance.ThermalVision.InProcessSwitching)
+                : (_headWearNvg != null && _headWearThermal == null && ((ITogglableComponentContainer)_headWearNvg).Togglable.On && !CameraClass.Instance.NightVision.InProcessSwitching));
             // headWear has battery with resource installed and headwear (nvg/thermal) isn't switching and is on
 
             if (headWearBattery != null && BatterySystemPlugin.batteryDictionary.ContainsKey(GetHeadwearSight()))
@@ -78,7 +78,7 @@ namespace BatterySystem
 
         public static void Drain(Item batteryItem)
         {
-            if (HeadwearBatteries.headWearItem.GetItemComponentsInChildren<TogglableComponent>().FirstOrDefault()?.On == false) return;
+            if (headWearItem.GetItemComponentsInChildren<ITogglableComponent>().FirstOrDefault().On == false) return;
 
             //Default battery lasts 1 hr * configmulti * itemmulti, itemmulti was Hazelify's idea!
             HeadwearBatteries.headWearBattery.Value -= Mathf.Clamp(1 / 36f
