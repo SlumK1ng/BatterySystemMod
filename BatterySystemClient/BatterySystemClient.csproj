@@ -95,6 +95,7 @@
     <Compile Include="Properties\Config.cs" />
     <Compile Include="Properties\ConfigurationManagerAttributes.cs" />
     <Compile Include="SightBatteries.cs" />
+    <Compile Include="TacticalDeviceBatteries.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Dependencies\0Harmony.dll" />

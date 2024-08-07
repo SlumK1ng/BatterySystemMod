@@ -80,7 +80,7 @@ namespace BatterySystem
 
 						else if (item.IsChildOf(Singleton<GameWorld>.Instance.MainPlayer?.ActiveSlot.ContainedItem))
 						{
-							BatterySystem.CheckDeviceIfDraining();
+                            TacticalDeviceBatteries.CheckDeviceIfDraining();
 							SightBatteries.CheckSightIfDraining();
 						}
 					}

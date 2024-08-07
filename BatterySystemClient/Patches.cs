@@ -34,7 +34,7 @@ namespace BatterySystem
 			{
 				BatterySystemPlugin.localInventory = __instance.InventoryControllerClass.Inventory; //Player Inventory
                 SightBatteries.sightMods.Clear(); // remove old sight entries that were saved from previous raid
-				BatterySystem.lightMods.Clear(); // same for tactical devices
+                TacticalDeviceBatteries.lightMods.Clear(); // same for tactical devices
                 HeadsetBatteries.SetEarPieceComponents();
 				//__instance.OnSightChangedEvent -= sight => BatterySystem.CheckSightIfDraining();
 			}
@@ -120,31 +120,12 @@ namespace BatterySystem
 				}
 				else if (BatterySystem.IsInSlot(__instance.ContainedItem, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot))
 				{ // if sight is removed and empty slot is applied, then remove the sight from sightdb
-					BatterySystem.CheckDeviceIfDraining();
+					TacticalDeviceBatteries.CheckDeviceIfDraining();
 					SightBatteries.CheckSightIfDraining();
 					return;
 				}
                 HeadsetBatteries.SetEarPieceComponents();
                 HeadwearBatteries.SetHeadWearComponents();
-			}
-		}
-	}
-
-	public class TacticalDevicePatch : ModulePatch
-	{
-		protected override MethodBase GetTargetMethod()
-		{
-			return typeof(TacticalComboVisualController).GetMethod(nameof(TacticalComboVisualController.UpdateBeams));
-		}
-
-		[PatchPostfix]
-		static void Postfix(ref TacticalComboVisualController __instance)
-		{
-			//only sights on equipped weapon are added
-			if (BatterySystemPlugin.InGame()
-				&& BatterySystem.IsInSlot(__instance?.LightMod?.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot))
-			{
-				BatterySystem.SetDeviceComponents(__instance);
 			}
 		}
 	}
