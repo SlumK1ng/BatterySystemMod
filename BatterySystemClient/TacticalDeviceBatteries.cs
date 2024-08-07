@@ -50,28 +50,23 @@ namespace BatterySystem
         }
         public static void CheckDeviceIfDraining()
         {
-            for (int i = 0; i < lightMods.Keys.Count; i++)
-            {
-                TacticalComboVisualController key = lightMods.Keys.ElementAt(i);
-                if (key?.LightMod?.Item != null)
-                {
-                    lightMods[key] = key.LightMod.Item.GetItemComponentsInChildren<ResourceComponent>().FirstOrDefault();
-                    _drainingTacDeviceBattery = (lightMods[key] != null && key.LightMod.IsActive && lightMods[key].Value > 0
-                        && BatterySystem.IsInSlot(key.LightMod.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot));
+            var lightModKeys = lightMods.Keys.ToArray();
+            foreach (TacticalComboVisualController deviceController in lightModKeys) {
+                if (deviceController?.LightMod?.Item == null) continue;
 
-                    if (BatterySystemPlugin.batteryDictionary.ContainsKey(key.LightMod.Item))
-                        BatterySystemPlugin.batteryDictionary[key.LightMod.Item] = _drainingTacDeviceBattery;
+                ResourceComponent deviceBattery = deviceController.LightMod.Item.GetItemComponentsInChildren<ResourceComponent>().FirstOrDefault();
+                lightMods[deviceController] = deviceBattery;
 
-                    // true for finding inactive gameobject reticles
-                    foreach (LaserBeam laser in key.gameObject.GetComponentsInChildren<LaserBeam>(true))
-                    {
-                        laser.gameObject.gameObject.SetActive(_drainingTacDeviceBattery);
-                    }
-                    foreach (Light light in key.gameObject.GetComponentsInChildren<Light>(true))
-                    {
-                        light.gameObject.gameObject.SetActive(_drainingTacDeviceBattery);
-                    }
-                }
+                _drainingTacDeviceBattery = (deviceBattery != null && deviceController.LightMod.IsActive && deviceBattery.Value > 0
+                    && BatterySystem.IsInSlot(deviceController.LightMod.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot));
+
+                if (BatterySystemPlugin.batteryDictionary.ContainsKey(deviceController.LightMod.Item))
+                    BatterySystemPlugin.batteryDictionary[deviceController.LightMod.Item] = _drainingTacDeviceBattery;
+
+                foreach (LaserBeam laser in deviceController.gameObject.GetComponentsInChildren<LaserBeam>(true))
+                    laser.gameObject.gameObject.SetActive(_drainingTacDeviceBattery);
+                foreach (Light light in deviceController.gameObject.GetComponentsInChildren<Light>(true))
+                    light.gameObject.gameObject.SetActive(_drainingTacDeviceBattery);
             }
         }
     }
