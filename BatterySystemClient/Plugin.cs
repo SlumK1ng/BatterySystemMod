@@ -32,7 +32,7 @@ namespace BatterySystem
 			BatterySystemConfig.Init(Config);
 			if (!BatterySystemConfig.EnableMod.Value) return;
 
-			new PlayerInitPatch().Enable();
+			new SpawnPatch().Enable();
 			new AimSightPatch().Enable();
 			if (BatterySystemConfig.EnableHeadsets.Value)
 				new UpdatePhonesPatch().Enable();

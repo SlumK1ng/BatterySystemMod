@@ -89,12 +89,13 @@
     <Compile Include="BatterySystem.cs" />
     <Compile Include="HeadsetBatteries.cs" />
     <Compile Include="HeadwearBatteries.cs" />
-    <Compile Include="Patches.cs" />
+    <Compile Include="ApplyItemPatch.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Config.cs" />
     <Compile Include="Properties\ConfigurationManagerAttributes.cs" />
     <Compile Include="SightBatteries.cs" />
+    <Compile Include="SpawnPatch.cs" />
     <Compile Include="TacticalDeviceBatteries.cs" />
   </ItemGroup>
   <ItemGroup>
