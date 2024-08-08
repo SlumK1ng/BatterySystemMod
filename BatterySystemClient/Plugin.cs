@@ -10,12 +10,11 @@ using System.Linq;
 namespace BatterySystem
 {
 	/*TODO: 
-	 * headset battery is 100% and not drained on bots
 	 * Enable switching to iron sights when battery runs out
+	 * Tactical devices can be attached to helmet
 	 * equipping and removing headwear gives infinite nvg
-	 * switch to coroutines
-	 * flir does not require batteries, make recharge craft
 	 * Sound when toggling battery runs out or is removed or added
+	 * flir does not require batteries, make recharge craft
 	 * battery recharger - idea by Props
 	 */
 	[BepInPlugin("com.jiro.batterysystem", "BatterySystem", "1.5.0")]
