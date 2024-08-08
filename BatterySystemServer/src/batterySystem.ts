@@ -32,17 +32,17 @@ class Mod implements IPostDBLoadMod {
 
         items[aaBatteryID]._props.MaxResource = 100;
         items[aaBatteryID]._props.Resource = 100;
+        items[aaBatteryID]._props.ItemSound = "food_tin_can";
         items[rchblBatteryID]._props.MaxResource = 100;
         items[rchblBatteryID]._props.Resource = 100;
         items[rchblBatteryID]._props.Prefab.path = "batteries/cr123.bundle"
+        items[rchblBatteryID]._props.ItemSound = "food_tin_can";
         items[dBatteryID]._props.MaxResource = 100;
         items[dBatteryID]._props.Resource = 100;
         items[dBatteryID]._props.Prefab.path = "batteries/cr2032.bundle";
+        items[dBatteryID]._props.ItemSound = "food_tin_can";
         items[carBatteryID]._props.MaxResource = 100;
         items[carBatteryID]._props.Resource = 100;
-
-
-
 
         //Credit to Jehree! // 16 locales, wtf?
         for (const locale of locales) {
