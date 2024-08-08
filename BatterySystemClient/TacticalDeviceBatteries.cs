@@ -22,9 +22,8 @@ namespace BatterySystem
         {
             var lightModKeys = lightMods.Keys.ToArray();
             foreach (TacticalComboVisualController deviceController in lightModKeys) // tactical devices on active weapon
-                if (BatterySystem.IsInSlot(deviceController.LightMod.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot)
-                    && !BatterySystemPlugin.batteryDictionary.ContainsKey(deviceController.LightMod.Item))
-                    BatterySystemPlugin.batteryDictionary.Add(deviceController.LightMod.Item, lightMods[deviceController]?.Value > 0);
+                if (BatterySystem.IsInSlot(deviceController.LightMod.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot))
+                    BatterySystemPlugin.batteryDictionary[deviceController.LightMod.Item] = lightMods[deviceController]?.Value > 0;
         }
 
         public static void SetDeviceComponents(TacticalComboVisualController deviceInstance)
