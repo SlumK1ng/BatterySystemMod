@@ -82,12 +82,12 @@ namespace BatterySystem
         [PatchPostfix]
         public static void PatchPostfix(ref Player __instance) //BetterAudio __instance
         {
-            if (BatterySystemPlugin.InGame() && __instance.IsYourPlayer)
-            {
-                Singleton<BetterAudio>.Instance.Master.GetFloat("Compressor", out HeadsetBatteries.compressor);
-                Singleton<BetterAudio>.Instance.Master.GetFloat("CompressorMakeup", out HeadsetBatteries.compressorMakeup);
-                HeadsetBatteries.SetEarPieceComponents();
-            }
+            if (!BatterySystemPlugin.InGame()) return;
+            if (!__instance.IsYourPlayer) return;
+            
+            Singleton<BetterAudio>.Instance.Master.GetFloat("Compressor", out HeadsetBatteries.compressor);
+            Singleton<BetterAudio>.Instance.Master.GetFloat("CompressorMakeup", out HeadsetBatteries.compressorMakeup);
+            HeadsetBatteries.SetEarPieceComponents();
         }
     }
 
