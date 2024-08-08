@@ -22,7 +22,7 @@ namespace BatterySystem
         {
             var lightModKeys = lightMods.Keys.ToArray();
             foreach (TacticalComboVisualController deviceController in lightModKeys) // tactical devices on active weapon
-                if (BatterySystem.IsInSlot(deviceController.LightMod.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot))
+                if (IsInActiveSlot(deviceController.LightMod.Item))
                     BatterySystemPlugin.batteryDictionary[deviceController.LightMod.Item] = lightMods[deviceController]?.Value > 0;
         }
 
@@ -30,10 +30,10 @@ namespace BatterySystem
         {
             var lightModKeys = lightMods.Keys.ToArray();
             foreach (TacticalComboVisualController deviceController in lightModKeys)
-                if (!BatterySystem.IsInSlot(deviceController.LightMod.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot))
+                if (!IsInActiveSlot(deviceController.LightMod.Item))
                     lightMods.Remove(deviceController);
 
-            if (BatterySystem.IsInSlot(deviceInstance.LightMod.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot))
+            if (IsInActiveSlot(deviceInstance.LightMod.Item))
             {
                 // if sight is already in dictionary, dont add it
                 if (!lightMods.Keys.Any(key => key.LightMod.Item == deviceInstance.LightMod.Item)
@@ -47,6 +47,7 @@ namespace BatterySystem
             CheckDeviceIfDraining();
             BatterySystem.UpdateBatteryDictionary();
         }
+        
         public static void CheckDeviceIfDraining()
         {
             var lightModKeys = lightMods.Keys.ToArray();
@@ -55,8 +56,7 @@ namespace BatterySystem
 
                 ResourceComponent deviceBattery = deviceController.LightMod.Item.GetItemComponentsInChildren<ResourceComponent>().FirstOrDefault();
                 lightMods[deviceController] = deviceBattery;
-                _drainingTacDeviceBattery = (deviceBattery != null && deviceController.LightMod.IsActive && deviceBattery.Value > 0
-                    && BatterySystem.IsInSlot(deviceController.LightMod.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot));
+                _drainingTacDeviceBattery = (deviceBattery != null && deviceController.LightMod.IsActive && deviceBattery.Value > 0 && IsInActiveSlot(deviceController.LightMod.Item));
 
                 if (BatterySystemPlugin.batteryDictionary.ContainsKey(deviceController.LightMod.Item))
                     BatterySystemPlugin.batteryDictionary[deviceController.LightMod.Item] = _drainingTacDeviceBattery;
@@ -75,6 +75,14 @@ namespace BatterySystem
             foreach (Light light in deviceController.gameObject.GetComponentsInChildren<Light>(true))
                 light.gameObject.gameObject.SetActive(active);
         }
+
+        public static bool IsInActiveSlot(Item tacticalDevice)
+        {
+            if(BatterySystem.IsInSlot(tacticalDevice, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot)) return true;
+            if(BatterySystem.IsInSlot(tacticalDevice, Singleton<GameWorld>.Instance?.MainPlayer.Inventory.Equipment.GetSlot(EquipmentSlot.Headwear))) return true;
+
+            return false;
+        }
     }
     public class TacticalDevicePatch : ModulePatch
     {
@@ -88,7 +96,7 @@ namespace BatterySystem
         {
             //only sights on equipped weapon are added
             if (!BatterySystemPlugin.InGame()) return;
-            if (!BatterySystem.IsInSlot(__instance?.LightMod?.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot)) return;
+            if (!TacticalDeviceBatteries.IsInActiveSlot(__instance?.LightMod?.Item)) return;
 
             TacticalDeviceBatteries.SetDeviceComponents(__instance);
         }
