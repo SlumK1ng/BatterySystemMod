@@ -50,9 +50,7 @@ namespace BatterySystem
             {
                 SightModVisualControllers key = sightMods.Keys.ElementAt(i);
                 if (!BatterySystem.IsInSlot(key.SightMod.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot))
-                {
                     sightMods.Remove(key);
-                }
             }
 
             if (BatterySystem.IsInSlot(sightInstance.SightMod.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot) && _hasBatterySlot(lootItem))
