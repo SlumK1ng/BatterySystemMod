@@ -13,6 +13,7 @@ using EFT.CameraControl;
 using EFT.InventoryLogic;
 using UnityEngine.Experimental.GlobalIllumination;
 using BatterySystem.Configs;
+using UnityEngine;
 
 namespace BatterySystem
 {
