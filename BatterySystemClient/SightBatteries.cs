@@ -117,7 +117,7 @@ namespace BatterySystem
             }
             
             //Dont change iron sights unless there are optics attached
-            FoldableSightPatch.FoldIronSights(anyOpticsWithBattery);
+            //FoldableSightPatch.FoldIronSights(anyOpticsWithBattery);
         }
     }
 
