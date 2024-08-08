@@ -34,7 +34,7 @@ namespace BatterySystem
 			}
 
 			HeadsetBatteries.TrackBatteries();
-			HeadwearBatteries.TrackBatteries();
+			NightVisionBatteries.TrackBatteries();
 			SightBatteries.TrackBatteries();
 			TacticalDeviceBatteries.TrackBatteries();
 		}
