@@ -35,7 +35,7 @@ namespace BatterySystem
         {
             if (BatterySystemConfig.EnableHeadsets.Value)
             {
-                headsetItem = BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Earpiece).Items?.FirstOrDefault();
+                headsetItem = GetEarpiece();
                 headsetBattery = headsetItem?.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault();
                 CheckEarPieceIfDraining();
                 BatterySystem.UpdateBatteryDictionary();
@@ -70,6 +70,13 @@ namespace BatterySystem
 
             if (headsetItem != null && BatterySystemPlugin.batteryDictionary.ContainsKey(headsetItem))
                 BatterySystemPlugin.batteryDictionary[headsetItem] = _drainingEarPieceBattery;
+        }
+
+        private static Item GetEarpiece()
+        {
+            //Try get headphones from "Earpiece" slot
+            if(BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Earpiece).Items?.FirstOrDefault() is Item headphones) return headphones;
+            return null;
         }
     }
 
