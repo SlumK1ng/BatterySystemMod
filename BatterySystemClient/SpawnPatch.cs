@@ -50,9 +50,9 @@ namespace BatterySystem
         private static void AddBatteriesToBot(Player botPlayer)
         {
             Inventory _botInventory = botPlayer.InventoryControllerClass.Inventory;
-            Item AABatteryItem = Singleton<ItemFactory>.Instance.GetPresetItem("5672cb124bdc2d1a0f8b4568");
-            Item CR2032Item = Singleton<ItemFactory>.Instance.GetPresetItem("5672cb304bdc2dc2088b456a");
-            Item CR123Item = Singleton<ItemFactory>.Instance.GetPresetItem("590a358486f77429692b2790");
+            Item AABatteryItem = Singleton<ItemFactory>.Instance.GetPresetItem(BatterySystemPlugin.AABatteryId);
+            Item CR2032Item = Singleton<ItemFactory>.Instance.GetPresetItem(BatterySystemPlugin.CR2032BatteryId);
+            Item CR123Item = Singleton<ItemFactory>.Instance.GetPresetItem(BatterySystemPlugin.CR123BatteryId);
             foreach (Item item in _botInventory.Equipment.GetAllItems())
             {
                 if (item is LootItemClass lootItem)

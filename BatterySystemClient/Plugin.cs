@@ -22,6 +22,9 @@ namespace BatterySystem
 	//[BepInDependency("com.AKI.core", "3.8.0")]
 	public class BatterySystemPlugin : BaseUnityPlugin
 	{
+		public const string AABatteryId = "5672cb124bdc2d1a0f8b4568";
+		public const string CR2032BatteryId = "5672cb304bdc2dc2088b456a";
+		public const string CR123BatteryId = "590a358486f77429692b2790";
         public static Dictionary<Item, bool> batteryDictionary = new Dictionary<Item, bool>();
         //resource drain all batteries that are on // using dictionary to help and sync draining batteries
 
