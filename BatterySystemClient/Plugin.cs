@@ -11,9 +11,7 @@ namespace BatterySystem
 {
 	/*TODO: 
 	 * Enable switching to iron sights when battery runs out
-	 * Tactical devices can be attached to helmet
 	 * Change background color of empty items
-	 * Some headphones are attached to helmet (currently not drained)
 	 * equipping and removing headwear gives infinite nvg
 	 * Sound when toggling battery runs out or is removed or added
 	 * flir does not require batteries, make recharge craft
