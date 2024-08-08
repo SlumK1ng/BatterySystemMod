@@ -55,23 +55,22 @@ namespace BatterySystem
             Item CR123Item = Singleton<ItemFactory>.Instance.GetPresetItem(BatterySystemPlugin.CR123BatteryId);
             foreach (Item item in _botInventory.Equipment.GetAllItems())
             {
-                if (item is LootItemClass lootItem)
+	            if (!(item is LootItemClass lootItem)) continue;
+	            
+                foreach (Slot slot in lootItem.AllSlots)
                 {
-                    foreach (Slot slot in lootItem.AllSlots)
-                    {
-						Item battery = null;
-						if (slot.CheckCompatibility(AABatteryItem))
-							battery = AABatteryItem.CloneItem();
-                        if (slot.CheckCompatibility(CR2032Item))
-                            battery = CR2032Item.CloneItem();
-                        if (slot.CheckCompatibility(CR123Item))
-                            battery = CR123Item.CloneItem();
+					Item battery = null;
+					if (slot.CheckCompatibility(AABatteryItem))
+						battery = AABatteryItem.CloneItem();
+                    if (slot.CheckCompatibility(CR2032Item))
+                        battery = CR2032Item.CloneItem();
+                    if (slot.CheckCompatibility(CR123Item))
+                        battery = CR123Item.CloneItem();
 
-						if (battery == null) continue;
+					if (battery == null) continue;
 
-                        slot.Add(battery, false);
-                        DrainSpawnedBattery(battery, botPlayer);
-                    }
+                    slot.Add(battery, false);
+                    DrainSpawnedBattery(battery, botPlayer);
                 }
             }
         }
