@@ -56,18 +56,25 @@ namespace BatterySystem
 
                 ResourceComponent deviceBattery = deviceController.LightMod.Item.GetItemComponentsInChildren<ResourceComponent>().FirstOrDefault();
                 lightMods[deviceController] = deviceBattery;
-
                 _drainingTacDeviceBattery = (deviceBattery != null && deviceController.LightMod.IsActive && deviceBattery.Value > 0
                     && BatterySystem.IsInSlot(deviceController.LightMod.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot));
 
                 if (BatterySystemPlugin.batteryDictionary.ContainsKey(deviceController.LightMod.Item))
                     BatterySystemPlugin.batteryDictionary[deviceController.LightMod.Item] = _drainingTacDeviceBattery;
 
-                foreach (LaserBeam laser in deviceController.gameObject.GetComponentsInChildren<LaserBeam>(true))
-                    laser.gameObject.gameObject.SetActive(_drainingTacDeviceBattery);
-                foreach (Light light in deviceController.gameObject.GetComponentsInChildren<Light>(true))
-                    light.gameObject.gameObject.SetActive(_drainingTacDeviceBattery);
+                SetDeviceActive(deviceController, _drainingTacDeviceBattery);
             }
+        }
+
+        private static void SetDeviceActive(TacticalComboVisualController deviceController, bool active)
+        {
+            //Also turn off the device when out of battery (so bots don't spot the player because the light is enabled)
+            deviceController.LightMod.IsActive = active;
+            
+            foreach (LaserBeam laser in deviceController.gameObject.GetComponentsInChildren<LaserBeam>(true))
+                laser.gameObject.gameObject.SetActive(active);
+            foreach (Light light in deviceController.gameObject.GetComponentsInChildren<Light>(true))
+                light.gameObject.gameObject.SetActive(active);
         }
     }
     public class TacticalDevicePatch : ModulePatch
