@@ -62,6 +62,7 @@ namespace BatterySystem
 			var batteryKeys = batteryDictionary.Keys.ToArray();
             foreach (Item batteryItem in batteryKeys)
 			{
+				//Is draining disabled on this battery?
 				if (!batteryDictionary[batteryItem]) continue;
 
 				// Drain headwear NVG/Thermal
