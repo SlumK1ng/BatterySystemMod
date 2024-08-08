@@ -76,7 +76,7 @@ namespace BatterySystem
 						batteryResource.Value = 0f;
 						
 						HeadsetBatteries.CheckEarPieceIfDraining();
-						HeadwearBatteries.CheckHeadWearIfDraining();
+						NightVisionBatteries.CheckHeadWearIfDraining();
 						TacticalDeviceBatteries.CheckDeviceIfDraining();
 						SightBatteries.CheckSightIfDraining();
 					}

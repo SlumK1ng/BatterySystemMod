@@ -15,7 +15,7 @@ using UnityEngine;
 
 namespace BatterySystem
 {
-    public class HeadwearBatteries
+    public class NightVisionBatteries
     {
         private static Dictionary<string, float> deviceDrainMultiplier = new Dictionary<string, float>
         {
@@ -93,7 +93,7 @@ namespace BatterySystem
             {
                 if (__instance.InProcessSwitching)
                     StaticManager.BeginCoroutine(IsNVSwitching(__instance));
-                else HeadwearBatteries.SetHeadWearComponents();
+                else NightVisionBatteries.SetHeadWearComponents();
             }
         }
         //waits until InProcessSwitching is false and then 
@@ -103,7 +103,7 @@ namespace BatterySystem
             {
                 yield return new WaitForSeconds(1f / 100f);
             }
-            HeadwearBatteries.SetHeadWearComponents();
+            NightVisionBatteries.SetHeadWearComponents();
             yield break;
         }
     }
@@ -122,7 +122,7 @@ namespace BatterySystem
             {
                 if (__instance.InProcessSwitching)
                     StaticManager.BeginCoroutine(IsThermalSwitching(__instance));
-                else HeadwearBatteries.SetHeadWearComponents();
+                else NightVisionBatteries.SetHeadWearComponents();
             }
         }
         private static IEnumerator IsThermalSwitching(ThermalVision tv)
@@ -131,7 +131,7 @@ namespace BatterySystem
             {
                 yield return new WaitForSeconds(1f / 100f);
             }
-            HeadwearBatteries.SetHeadWearComponents();
+            NightVisionBatteries.SetHeadWearComponents();
             yield break;
         }
     }

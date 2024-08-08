@@ -37,7 +37,7 @@ namespace BatterySystem
 				}
 				else if (BatterySystem.IsInSlot(__instance.ParentItem, BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Headwear)))
 				{ //if item in headwear slot applied
-					HeadwearBatteries.SetHeadWearComponents();
+					NightVisionBatteries.SetHeadWearComponents();
 					return;
 				}
 				else if (BatterySystem.IsInSlot(__instance.ContainedItem, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot))
@@ -47,7 +47,7 @@ namespace BatterySystem
 					return;
 				}
                 HeadsetBatteries.SetEarPieceComponents();
-                HeadwearBatteries.SetHeadWearComponents();
+                NightVisionBatteries.SetHeadWearComponents();
 			}
 		}
 	}
