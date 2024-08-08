@@ -180,9 +180,13 @@ namespace BatterySystem
 		[PatchPostfix]
 		static void Postfix(ref ProceduralWeaponAnimation __instance)
 		{
-			if (BatterySystemConfig.AutoUnfold.Value)
-				if (BatterySystemConfig.EnableLogs.Value)
-					Logger.LogInfo("FindAimTransforms at " + Time.time);
+            /*
+			foreach (AutoFoldableSight autoFoldableSight in componentsInChildren)
+			{
+				autoFoldableSight.gameObject.SetActive((autoFoldableSight.Mode == EAutoFoldableSightMode.On) ^ flag);
+			}*/
+            
+			//if (BatterySystemConfig.AutoUnfold.Value)
 			//AutofoldableSight.On == On when folds, unfold false
 			//Invoke a method that folds sight when adding a sight to a weapon.
 		}
