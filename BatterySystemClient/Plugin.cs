@@ -45,7 +45,7 @@ namespace BatterySystem
 			new TacticalDevicePatch().Enable();
 			new NvgHeadWearPatch().Enable();
 			new ThermalHeadWearPatch().Enable();
-            new FoldableSightPatch().Enable();
+            //new FoldableSightPatch().Enable();
 
             InvokeRepeating(nameof(Heartbeat), 1, 1);
 		}

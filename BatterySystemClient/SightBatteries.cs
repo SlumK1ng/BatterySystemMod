@@ -178,7 +178,7 @@ namespace BatterySystem
             SightBatteries.CheckSightIfDraining();
         }
     }
-
+/*
     public class FoldableSightPatch : ModulePatch
     {
         private static ProceduralWeaponAnimation animator;
@@ -201,11 +201,21 @@ namespace BatterySystem
             {
                 //(BatterySystemConfig.AutoUnfold.Value)
                 autoFoldableSight.Mode = folded ? EAutoFoldableSightMode.On : EAutoFoldableSightMode.Off;
+                autoFoldableSight.gameObject.SetActive(!folded);
+                //TODO somehow sights still are folded even when always returning off
+            }
+
+            if (Singleton<GameWorld>.Instance?.MainPlayer
+                    ?.HandsController is Player.FirearmController firearmController)
+            {
+                NotificationManagerClass.DisplayMessageNotification("Fold update");
+                firearmController.WeaponModified();
+                NotificationManagerClass.DisplayMessageNotification("Fold update done");
             }
             
             NotificationManagerClass.DisplayMessageNotification("Fold method "+folded);
         }
-	}
+	}*/
 
     //Throws NullRefError?
     //UNNECESSARY???? WHAT
