@@ -60,31 +60,31 @@ namespace BatterySystem
 
 			//here?
 			var batteryKeys = batteryDictionary.Keys.ToArray();
-            foreach (Item item in batteryKeys)
+            foreach (Item batteryItem in batteryKeys)
 			{
-				if (!batteryDictionary[item]) continue;
+				if (!batteryDictionary[batteryItem]) continue;
 
 				// Drain headwear NVG/Thermal
-				if (item.IsChildOf(HeadwearBatteries.headWearItem))
+				if (batteryItem.IsChildOf(HeadwearBatteries.headWearItem))
 				{
-					HeadwearBatteries.Drain(item);
+					HeadwearBatteries.Drain(batteryItem);
 					return;
 				}
 					
 
 				//for sights, earpiece and tactical devices
-				if (item.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault() is ResourceComponent battery)
+				if (batteryItem.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault() is ResourceComponent batteryResource)
 				{
-					battery.Value -= 1 / 100f * BatterySystemConfig.DrainMultiplier.Value; //2 hr
+					batteryResource.Value -= 1 / 100f * BatterySystemConfig.DrainMultiplier.Value; //2 hr
 
 					//when battery has no charge left
-					if (battery.Value < 0f)
+					if (batteryResource.Value < 0f)
 					{
-						battery.Value = 0f;
-						if (item.IsChildOf(localInventory.Equipment.GetSlot(EquipmentSlot.Earpiece).ContainedItem))
+						batteryResource.Value = 0f;
+						if (batteryItem.IsChildOf(localInventory.Equipment.GetSlot(EquipmentSlot.Earpiece).ContainedItem))
 							HeadsetBatteries.CheckEarPieceIfDraining();
 
-						if (item.IsChildOf(Singleton<GameWorld>.Instance.MainPlayer?.ActiveSlot.ContainedItem))
+						if (batteryItem.IsChildOf(Singleton<GameWorld>.Instance.MainPlayer?.ActiveSlot.ContainedItem))
 						{
                             TacticalDeviceBatteries.CheckDeviceIfDraining();
 							SightBatteries.CheckSightIfDraining();
