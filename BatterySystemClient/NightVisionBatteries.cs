@@ -26,18 +26,18 @@ namespace BatterySystem
             { "5c110624d174af029e69734c", 3f },// T-7 Thermal Goggles with a Night Vision mount, Double AA
         };
 
-        public static Item headWearItem = null;
-        private static NightVisionComponent _headWearNvg = null;
-        private static ThermalVisionComponent _headWearThermal = null;
-        private static bool _drainingHeadWearBattery = false;
-        public static ResourceComponent headWearBattery = null;
+        public static Item NightVisionItem = null;
+        private static NightVisionComponent _nvgDevice = null;
+        private static ThermalVisionComponent _thermalDevice = null;
+        private static bool _drainingNightVisionBattery = false;
+        public static ResourceComponent NightVisionBattery = null;
 
         public static void SetHeadWearComponents()
         {
-            headWearItem = BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Headwear).Items?.FirstOrDefault(); // default null else headwear
-            _headWearNvg = headWearItem?.GetItemComponentsInChildren<NightVisionComponent>().FirstOrDefault(); //default null else nvg item
-            _headWearThermal = headWearItem?.GetItemComponentsInChildren<ThermalVisionComponent>().FirstOrDefault(); //default null else thermal item
-            headWearBattery = GetHeadwearSight()?.Parent.Item.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault(); //default null else resource
+            NightVisionItem = BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Headwear).Items?.FirstOrDefault(); // default null else headwear
+            _nvgDevice = NightVisionItem?.GetItemComponentsInChildren<NightVisionComponent>().FirstOrDefault(); //default null else nvg item
+            _thermalDevice = NightVisionItem?.GetItemComponentsInChildren<ThermalVisionComponent>().FirstOrDefault(); //default null else thermal item
+            NightVisionBattery = GetHeadwearSight()?.Parent.Item.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault(); //default null else resource
 
             CheckHeadWearIfDraining();
             BatterySystem.UpdateBatteryDictionary();
@@ -48,34 +48,34 @@ namespace BatterySystem
             if (GetHeadwearSight() == null) return;
             if (BatterySystemPlugin.batteryDictionary.ContainsKey(GetHeadwearSight())) return; // headwear
             
-            BatterySystemPlugin.batteryDictionary.Add(GetHeadwearSight(), _drainingHeadWearBattery);
+            BatterySystemPlugin.batteryDictionary.Add(GetHeadwearSight(), _drainingNightVisionBattery);
         }
 
         public static Item GetHeadwearSight() // returns the special device goggles that are equipped
         {
-            if (_headWearNvg != null)
-                return _headWearNvg.Item;
-            if (_headWearThermal != null)
-                return _headWearThermal.Item;
+            if (_nvgDevice != null)
+                return _nvgDevice.Item;
+            if (_thermalDevice != null)
+                return _thermalDevice.Item;
 
             return null;
         }
 
         public static void CheckHeadWearIfDraining()
         {
-            _drainingHeadWearBattery = headWearBattery != null && headWearBattery.Value > 0
-                && (_headWearNvg == null && _headWearThermal != null
-                ? (((ITogglableComponentContainer)_headWearThermal).Togglable.On && !CameraClass.Instance.ThermalVision.InProcessSwitching)
-                : (_headWearNvg != null && _headWearThermal == null && ((ITogglableComponentContainer)_headWearNvg).Togglable.On && !CameraClass.Instance.NightVision.InProcessSwitching));
+            _drainingNightVisionBattery = NightVisionBattery != null && NightVisionBattery.Value > 0
+                && (_nvgDevice == null && _thermalDevice != null
+                ? (((ITogglableComponentContainer)_thermalDevice).Togglable.On && !CameraClass.Instance.ThermalVision.InProcessSwitching)
+                : (_nvgDevice != null && _thermalDevice == null && ((ITogglableComponentContainer)_nvgDevice).Togglable.On && !CameraClass.Instance.NightVision.InProcessSwitching));
             // headWear has battery with resource installed and headwear (nvg/thermal) isn't switching and is on
 
-            if (headWearBattery != null && BatterySystemPlugin.batteryDictionary.ContainsKey(GetHeadwearSight()))
-                BatterySystemPlugin.batteryDictionary[GetHeadwearSight()] = _drainingHeadWearBattery;
+            if (NightVisionBattery != null && BatterySystemPlugin.batteryDictionary.ContainsKey(GetHeadwearSight()))
+                BatterySystemPlugin.batteryDictionary[GetHeadwearSight()] = _drainingNightVisionBattery;
 
-            if (_headWearNvg != null)
-                CameraClass.Instance.NightVision.On = _drainingHeadWearBattery;
-            if (_headWearThermal != null)
-                CameraClass.Instance.ThermalVision.On = _drainingHeadWearBattery;
+            if (_nvgDevice != null)
+                CameraClass.Instance.NightVision.On = _drainingNightVisionBattery;
+            if (_thermalDevice != null)
+                CameraClass.Instance.ThermalVision.On = _drainingNightVisionBattery;
         }
     }
 
