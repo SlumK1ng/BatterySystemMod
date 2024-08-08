@@ -69,16 +69,15 @@ namespace BatterySystem
 					HeadwearBatteries.Drain(item);
 
 				//for sights, earpiece and tactical devices
-				else if (item.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault() != null)
+				if (item.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault() is ResourceComponent battery)
 				{
-					item.GetItemComponentsInChildren<ResourceComponent>(false).First().Value -= 1 / 100f
-						* BatterySystemConfig.DrainMultiplier.Value; //2 hr
+					battery.Value -= 1 / 100f * BatterySystemConfig.DrainMultiplier.Value; //2 hr
 
 					//when battery has no charge left
-					if (item.GetItemComponentsInChildren<ResourceComponent>(false).First().Value < 0f)
+					if (battery.Value < 0f)
 					{
-						item.GetItemComponentsInChildren<ResourceComponent>(false).First().Value = 0f;
-						if (item.IsChildOf(BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Earpiece).ContainedItem))
+						battery.Value = 0f;
+						if (item.IsChildOf(localInventory.Equipment.GetSlot(EquipmentSlot.Earpiece).ContainedItem))
 							HeadsetBatteries.CheckEarPieceIfDraining();
 
 						else if (item.IsChildOf(Singleton<GameWorld>.Instance.MainPlayer?.ActiveSlot.ContainedItem))
