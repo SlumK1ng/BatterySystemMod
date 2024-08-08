@@ -22,6 +22,15 @@ namespace BatterySystem
         // compressor is used because the default 
         public static float compressor;
 
+        public static void TrackBatteries()
+        {
+            if (!BatterySystemConfig.EnableHeadsets.Value) return;
+            if (headsetItem == null) return;
+            if (BatterySystemPlugin.batteryDictionary.ContainsKey(headsetItem)) return;
+
+            BatterySystemPlugin.batteryDictionary.Add(headsetItem, _drainingEarPieceBattery);
+        }
+        
         public static void SetEarPieceComponents()
         {
             if (BatterySystemConfig.EnableHeadsets.Value)
