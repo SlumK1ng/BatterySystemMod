@@ -45,8 +45,10 @@ namespace BatterySystem
 
         public static void TrackBatteries()
         {
-            if (GetHeadwearSight() != null && !BatterySystemPlugin.batteryDictionary.ContainsKey(GetHeadwearSight())) // headwear
-                BatterySystemPlugin.batteryDictionary.Add(GetHeadwearSight(), _drainingHeadWearBattery);
+            if (GetHeadwearSight() == null) return;
+            if (BatterySystemPlugin.batteryDictionary.ContainsKey(GetHeadwearSight())) return; // headwear
+            
+            BatterySystemPlugin.batteryDictionary.Add(GetHeadwearSight(), _drainingHeadWearBattery);
         }
 
         public static Item GetHeadwearSight() // returns the special device goggles that are equipped
@@ -78,8 +80,9 @@ namespace BatterySystem
 
         public static void Drain(Item batteryItem)
         {
-            if (headWearItem.GetItemComponentsInChildren<ITogglableComponent>().FirstOrDefault().On == false) return;
-
+            if (headWearItem.GetItemComponentsInChildren<ITogglableComponent>().FirstOrDefault()?.On == false) return;
+            if (!(GetHeadwearSight()?.TemplateId is string headwearId)) return;
+            
             //Default battery lasts 1 hr * configmulti * itemmulti, itemmulti was Hazelify's idea!
             headWearBattery.Value -= Mathf.Clamp(1 / 36f
                     * BatterySystemConfig.DrainMultiplier.Value
