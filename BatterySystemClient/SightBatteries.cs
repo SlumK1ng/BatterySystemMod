@@ -180,11 +180,10 @@ namespace BatterySystem
 		[PatchPostfix]
 		static void Postfix(ref ProceduralWeaponAnimation __instance)
 		{
-            /*
 			foreach (AutoFoldableSight autoFoldableSight in componentsInChildren)
 			{
 				autoFoldableSight.gameObject.SetActive((autoFoldableSight.Mode == EAutoFoldableSightMode.On) ^ flag);
-			}*/
+			}
             
 			//if (BatterySystemConfig.AutoUnfold.Value)
 			//AutofoldableSight.On == On when folds, unfold false
