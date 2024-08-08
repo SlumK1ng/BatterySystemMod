@@ -71,10 +71,6 @@ namespace BatterySystem
             if (headsetItem != null && BatterySystemPlugin.batteryDictionary.ContainsKey(headsetItem))
                 BatterySystemPlugin.batteryDictionary[headsetItem] = _drainingEarPieceBattery;
         }
-
-        public static void Drain(Item batteryItem)
-        {
-        }
     }
 
     public class UpdatePhonesPatch : ModulePatch
