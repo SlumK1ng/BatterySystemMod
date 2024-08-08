@@ -63,6 +63,7 @@ namespace BatterySystem
 
         public static void CheckHeadWearIfDraining()
         {
+            //TODO simplify this
             _drainingHeadWearBattery = headWearBattery != null && headWearBattery.Value > 0
                 && (_headWearNvg == null && _headWearThermal != null
                 ? (((ITogglableComponentContainer)_headWearThermal).Togglable.On && !CameraClass.Instance.ThermalVision.InProcessSwitching)
@@ -80,6 +81,7 @@ namespace BatterySystem
 
         public static void Drain(Item batteryItem)
         {
+            //TODO no custom drain method
             if (headWearItem.GetItemComponentsInChildren<ITogglableComponent>().FirstOrDefault()?.On == false) return;
             if (!(GetHeadwearSight()?.TemplateId is string headwearId)) return;
             
