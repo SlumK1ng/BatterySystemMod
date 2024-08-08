@@ -91,6 +91,9 @@ namespace BatterySystem
 						resourceAvg = (int)(botPlayer.Profile.Info.Level / 150f * batteryResource.MaxResource);
 					
 					//Boss always have full battery
+					if(botPlayer.AIData?.BotOwner?.Boss?.IamBoss == true)
+						resourceAvg = (int)batteryResource.MaxResource;
+					
                     batteryResource.Value = Mathf.Clamp(random.Next(resourceAvg - 10, Mathf.Min(resourceAvg + 5)), 
 	                    0, batteryResource.MaxResource);
 				}
