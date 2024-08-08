@@ -77,25 +77,6 @@ namespace BatterySystem
             if (_headWearThermal != null)
                 CameraClass.Instance.ThermalVision.On = _drainingHeadWearBattery;
         }
-
-        public static void Drain(Item batteryItem)
-        {
-            if (headWearItem.GetItemComponentsInChildren<ITogglableComponent>().FirstOrDefault()?.On == false) return;
-            if (!(GetHeadwearSight()?.TemplateId is string headwearId)) return;
-            
-            //Default battery lasts 1 hr * configmulti * itemmulti, itemmulti was Hazelify's idea!
-            headWearBattery.Value -= Mathf.Clamp(1 / 36f
-                    * BatterySystemConfig.DrainMultiplier.Value
-                    * deviceDrainMultiplier[headwearId],
-                    0f, 100f);
-
-            if (batteryItem.GetItemComponentsInChildren<ResourceComponent>(false).First().Value < 0f)
-            {
-                batteryItem.GetItemComponentsInChildren<ResourceComponent>(false).First().Value = 0f;
-                if (batteryItem.IsChildOf(BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Headwear).ContainedItem))
-                    CheckHeadWearIfDraining();
-            }
-        }
     }
 
     public class NvgHeadWearPatch : ModulePatch

@@ -64,14 +64,7 @@ namespace BatterySystem
 			{
 				//Is draining disabled on this battery?
 				if (!batteryDictionary[batteryItem]) continue;
-
-				// Drain headwear NVG/Thermal
-				if (batteryItem.IsChildOf(HeadwearBatteries.headWearItem))
-				{
-					HeadwearBatteries.Drain(batteryItem);
-					return;
-				}
-
+				
 				//for sights, earpiece and tactical devices
 				if (batteryItem.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault() is ResourceComponent batteryResource)
 				{
@@ -83,6 +76,7 @@ namespace BatterySystem
 						batteryResource.Value = 0f;
 						
 						HeadsetBatteries.CheckEarPieceIfDraining();
+						HeadwearBatteries.CheckHeadWearIfDraining();
 						TacticalDeviceBatteries.CheckDeviceIfDraining();
 						SightBatteries.CheckSightIfDraining();
 					}
