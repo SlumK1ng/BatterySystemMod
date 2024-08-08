@@ -71,7 +71,6 @@ namespace BatterySystem
 					HeadwearBatteries.Drain(batteryItem);
 					return;
 				}
-					
 
 				//for sights, earpiece and tactical devices
 				if (batteryItem.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault() is ResourceComponent batteryResource)
