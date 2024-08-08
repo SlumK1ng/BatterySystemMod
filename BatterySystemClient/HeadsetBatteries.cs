@@ -74,8 +74,22 @@ namespace BatterySystem
 
         private static Item GetEarpiece()
         {
+            if (BatterySystemPlugin.localInventory == null) return null;
             //Try get headphones from "Earpiece" slot
             if(BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Earpiece).Items?.FirstOrDefault() is Item headphones) return headphones;
+            //Try get headphones from helmet attachment slot
+            const string headphonesParentId = "5645bcb74bdc2ded0b8b4578";
+            if (BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Headwear).Items?.FirstOrDefault() is LootItemClass helmet)
+            {
+                foreach (Item helmetAttachment in helmet.GetAllItems())
+                {
+                    if (helmetAttachment == null) continue;
+                    if (!helmetAttachment.Template.Parent._id.Equals(headphonesParentId)) continue;
+                    
+                    return helmetAttachment;
+                }
+            }
+
             return null;
         }
     }
