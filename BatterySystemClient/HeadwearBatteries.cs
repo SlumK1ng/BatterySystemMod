@@ -86,7 +86,7 @@ namespace BatterySystem
             //Default battery lasts 1 hr * configmulti * itemmulti, itemmulti was Hazelify's idea!
             headWearBattery.Value -= Mathf.Clamp(1 / 36f
                     * BatterySystemConfig.DrainMultiplier.Value
-                    * itemDrainMultiplier[GetHeadwearSight()?.TemplateId],
+                    * itemDrainMultiplier[headwearId],
                     0f, 100f);
 
             if (batteryItem.GetItemComponentsInChildren<ResourceComponent>(false).First().Value < 0f)
