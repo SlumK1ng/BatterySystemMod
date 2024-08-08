@@ -72,41 +72,51 @@ namespace BatterySystem
         {
             //for because modifying sightMods[key]
             var keys = sightMods.Keys.ToArray();
+            bool anyOpticsWithBattery = false;
             foreach (SightModVisualControllers key in keys)
             {
-                if (key?.SightMod?.Item != null)
+                if (key?.SightMod?.Item == null) continue;
+                
+                sightMods[key] = key.SightMod.Item.GetItemComponentsInChildren<ResourceComponent>().FirstOrDefault();
+                _drainingSightBattery = (sightMods[key] != null && sightMods[key].Value > 0
+                    && BatterySystem.IsInSlot(key.SightMod.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot));
+                
+                if (_drainingSightBattery)
+                    anyOpticsWithBattery = true;
+
+                if (BatterySystemPlugin.batteryDictionary.ContainsKey(key.SightMod.Item))
+                    BatterySystemPlugin.batteryDictionary[key.SightMod.Item] = _drainingSightBattery;
+
+                // true for finding inactive gameobject reticles
+                foreach (CollimatorSight col in key.gameObject.GetComponentsInChildren<CollimatorSight>(true))
                 {
-                    sightMods[key] = key.SightMod.Item.GetItemComponentsInChildren<ResourceComponent>().FirstOrDefault();
-                    _drainingSightBattery = (sightMods[key] != null && sightMods[key].Value > 0
-                        && BatterySystem.IsInSlot(key.SightMod.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot));
-
-                    if (BatterySystemPlugin.batteryDictionary.ContainsKey(key.SightMod.Item))
-                        BatterySystemPlugin.batteryDictionary[key.SightMod.Item] = _drainingSightBattery;
-
-                    // true for finding inactive gameobject reticles
-                    foreach (CollimatorSight col in key.gameObject.GetComponentsInChildren<CollimatorSight>(true))
-                    {
-                        col.gameObject.SetActive(_drainingSightBattery);
-                    }
-                    foreach (OpticSight optic in key.gameObject.GetComponentsInChildren<OpticSight>(true))
-                    {
-                        /*
-						//for nv sights
-						if (optic.NightVision != null)
-						{
-							Logger.LogWarning("OPTIC ENABLED: " + optic.NightVision?.enabled);
-							//PlayerInitPatch.nvgOnField.SetValue(optic.NightVision, _drainingSightBattery);
-							optic.NightVision.enabled = _drainingSightBattery;
-							Logger.LogWarning("OPTIC ON: " + optic.NightVision.On);
-							continue;
-						}*/
-
-                        if (key.SightMod.Item.Template.Parent._id != "55818ad54bdc2ddc698b4569" &&
-                            key.SightMod.Item.Template.Parent._id != "5c0a2cec0db834001b7ce47d") //Exceptions for hhs-1 (tan)
-                            optic.enabled = _drainingSightBattery;
-                    }
+                    /*
+                    Color fadeColor = col.CollimatorMaterial.color;
+                    fadeColor.a = .3f;
+                    col.CollimatorMaterial.color = fadeColor;
+                    */
+                    col.gameObject.SetActive(_drainingSightBattery);
+                }
+                
+                foreach (OpticSight optic in key.gameObject.GetComponentsInChildren<OpticSight>(true))
+                {
+					//for nv sights
+					/*if (optic.NightVision != null)
+					{
+						Logger.LogWarning("OPTIC ENABLED: " + optic.NightVision?.enabled);
+						//PlayerInitPatch.nvgOnField.SetValue(optic.NightVision, _drainingSightBattery);
+						optic.NightVision.enabled = _drainingSightBattery;
+						Logger.LogWarning("OPTIC ON: " + optic.NightVision.On);
+						continue;
+					}*/
+                    if (key.SightMod.Item.Template.Parent._id != "55818ad54bdc2ddc698b4569" &&
+                        key.SightMod.Item.Template.Parent._id != "5c0a2cec0db834001b7ce47d") //Exceptions for hhs-1 (tan)
+                        optic.enabled = _drainingSightBattery;
                 }
             }
+            
+            //Dont change iron sights unless there are optics attached
+            FoldableSightPatch.FoldIronSights(anyOpticsWithBattery);
         }
     }
 
@@ -168,26 +178,33 @@ namespace BatterySystem
         }
     }
 
-    /*
-	public class FoldableSightPatch : ModulePatch
-	{
+    public class FoldableSightPatch : ModulePatch
+    {
+        private static ProceduralWeaponAnimation animator;
+        
 		protected override MethodBase GetTargetMethod()
 		{
 			return typeof(ProceduralWeaponAnimation).GetMethod("FindAimTransforms");
 		}
 		[PatchPostfix]
 		static void Postfix(ref ProceduralWeaponAnimation __instance)
-		{
-			foreach (AutoFoldableSight autoFoldableSight in componentsInChildren)
-			{
-				autoFoldableSight.gameObject.SetActive((autoFoldableSight.Mode == EAutoFoldableSightMode.On) ^ flag);
-			}
-            
-			//if (BatterySystemConfig.AutoUnfold.Value)
-			//AutofoldableSight.On == On when folds, unfold false
-			//Invoke a method that folds sight when adding a sight to a weapon.
+        {
+            animator = __instance;
 		}
-	}*/
+
+        public static void FoldIronSights(bool folded)
+        {
+            if (animator?.HandsContainer?.Weapon == null) return;
+            
+            foreach (AutoFoldableSight autoFoldableSight in animator.HandsContainer.Weapon.GetComponentsInChildren<AutoFoldableSight>(true))
+            {
+                //(BatterySystemConfig.AutoUnfold.Value)
+                autoFoldableSight.Mode = folded ? EAutoFoldableSightMode.On : EAutoFoldableSightMode.Off;
+            }
+            
+            NotificationManagerClass.DisplayMessageNotification("Fold method "+folded);
+        }
+	}
 
     //Throws NullRefError?
     //UNNECESSARY???? WHAT
