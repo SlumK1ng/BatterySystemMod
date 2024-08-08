@@ -89,22 +89,21 @@ namespace BatterySystem
         [PatchPostfix]
         static void Postfix(ref NightVision __instance)
         {
-            if (__instance.name == "FPS Camera" && BatterySystemPlugin.InGame())
-            {
-                if (__instance.InProcessSwitching)
-                    StaticManager.BeginCoroutine(IsNVSwitching(__instance));
-                else NightVisionBatteries.SetHeadWearComponents();
-            }
+            if (!BatterySystemPlugin.InGame()) return;
+            if (__instance.name != "FPS Camera") return;
+            
+            if (__instance.InProcessSwitching)
+                StaticManager.BeginCoroutine(IsNVSwitching(__instance));
+            else 
+                NightVisionBatteries.SetHeadWearComponents();
         }
         //waits until InProcessSwitching is false and then 
         private static IEnumerator IsNVSwitching(NightVision nv)
         {
             while (nv.InProcessSwitching)
-            {
                 yield return new WaitForSeconds(1f / 100f);
-            }
+                
             NightVisionBatteries.SetHeadWearComponents();
-            yield break;
         }
     }
 
@@ -118,21 +117,20 @@ namespace BatterySystem
         [PatchPostfix]
         static void Postfix(ref ThermalVision __instance)
         {
-            if (__instance.name == "FPS Camera" && BatterySystemPlugin.InGame())
-            {
-                if (__instance.InProcessSwitching)
-                    StaticManager.BeginCoroutine(IsThermalSwitching(__instance));
-                else NightVisionBatteries.SetHeadWearComponents();
-            }
+            if (!BatterySystemPlugin.InGame()) return;
+            if (__instance.name != "FPS Camera") return;
+
+            if (__instance.InProcessSwitching)
+                StaticManager.BeginCoroutine(IsThermalSwitching(__instance));
+            else 
+                NightVisionBatteries.SetHeadWearComponents();
         }
         private static IEnumerator IsThermalSwitching(ThermalVision tv)
         {
             while (tv.InProcessSwitching)
-            {
                 yield return new WaitForSeconds(1f / 100f);
-            }
+            
             NightVisionBatteries.SetHeadWearComponents();
-            yield break;
         }
     }
 }
