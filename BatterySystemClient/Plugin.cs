@@ -81,14 +81,10 @@ namespace BatterySystem
 					if (batteryResource.Value < 0f)
 					{
 						batteryResource.Value = 0f;
-						if (batteryItem.IsChildOf(localInventory.Equipment.GetSlot(EquipmentSlot.Earpiece).ContainedItem))
-							HeadsetBatteries.CheckEarPieceIfDraining();
-
-						if (batteryItem.IsChildOf(Singleton<GameWorld>.Instance.MainPlayer?.ActiveSlot.ContainedItem))
-						{
-                            TacticalDeviceBatteries.CheckDeviceIfDraining();
-							SightBatteries.CheckSightIfDraining();
-						}
+						
+						HeadsetBatteries.CheckEarPieceIfDraining();
+						TacticalDeviceBatteries.CheckDeviceIfDraining();
+						SightBatteries.CheckSightIfDraining();
 					}
 				}
 			}
