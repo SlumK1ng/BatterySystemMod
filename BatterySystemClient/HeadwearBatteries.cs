@@ -17,7 +17,7 @@ namespace BatterySystem
 {
     public class HeadwearBatteries
     {
-        private static Dictionary<string, float> itemDrainMultiplier = new Dictionary<string, float>
+        private static Dictionary<string, float> deviceDrainMultiplier = new Dictionary<string, float>
         {
             { "5c0696830db834001d23f5da", 1f },// PNV-10T Night Vision Goggles, AA Battery
             { "5c0558060db834001b735271", 2f },// GPNVG-18 Night Vision goggles, CR123 battery pack
@@ -86,7 +86,7 @@ namespace BatterySystem
             //Default battery lasts 1 hr * configmulti * itemmulti, itemmulti was Hazelify's idea!
             headWearBattery.Value -= Mathf.Clamp(1 / 36f
                     * BatterySystemConfig.DrainMultiplier.Value
-                    * itemDrainMultiplier[headwearId],
+                    * deviceDrainMultiplier[headwearId],
                     0f, 100f);
 
             if (batteryItem.GetItemComponentsInChildren<ResourceComponent>(false).First().Value < 0f)
