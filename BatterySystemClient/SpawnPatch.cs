@@ -81,21 +81,20 @@ namespace BatterySystem
             //batteries charge depends on their max charge and bot level
             foreach (ResourceComponent batteryResource in spawnedBattery.GetItemComponentsInChildren<ResourceComponent>())
 			{
-				if (batteryResource.MaxResource > 0)
-				{
-					//TODO simplify & configurable avg value
-					var resourceAvg = random.Next(0, 5);
-					//Use player level to determine battery charge
-					if (botPlayer.Side == EPlayerSide.Usec || botPlayer.Side == EPlayerSide.Bear)
-						resourceAvg = (int)(botPlayer.Profile.Info.Level / 150f * batteryResource.MaxResource);
-					
-					//Boss always have full battery
-					if(botPlayer.AIData?.BotOwner?.Boss?.IamBoss == true)
-						resourceAvg = (int)batteryResource.MaxResource;
-					
-                    batteryResource.Value = Mathf.Clamp(random.Next(resourceAvg - 10, Mathf.Min(resourceAvg + 5)), 
-	                    0, batteryResource.MaxResource);
-				}
+				if (batteryResource.MaxResource <= 0) continue;
+				
+				//TODO simplify & configurable avg value
+				var resourceAvg = random.Next(0, 5);
+				//Use player level to determine battery charge
+				if (botPlayer.Side == EPlayerSide.Usec || botPlayer.Side == EPlayerSide.Bear)
+					resourceAvg = (int)(botPlayer.Profile.Info.Level / 150f * batteryResource.MaxResource);
+				
+				//Boss always have full battery
+				if(botPlayer.AIData?.BotOwner?.Boss?.IamBoss == true)
+					resourceAvg = (int)batteryResource.MaxResource;
+				
+                batteryResource.Value = Mathf.Clamp(random.Next(resourceAvg - 10, Mathf.Min(resourceAvg + 5)), 
+                    0, batteryResource.MaxResource);
 			}
 		}
 	}
