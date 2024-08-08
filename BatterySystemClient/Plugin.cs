@@ -66,7 +66,11 @@ namespace BatterySystem
 
 				// Drain headwear NVG/Thermal
 				if (item.IsChildOf(HeadwearBatteries.headWearItem))
+				{
 					HeadwearBatteries.Drain(item);
+					return;
+				}
+					
 
 				//for sights, earpiece and tactical devices
 				if (item.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault() is ResourceComponent battery)
@@ -80,7 +84,7 @@ namespace BatterySystem
 						if (item.IsChildOf(localInventory.Equipment.GetSlot(EquipmentSlot.Earpiece).ContainedItem))
 							HeadsetBatteries.CheckEarPieceIfDraining();
 
-						else if (item.IsChildOf(Singleton<GameWorld>.Instance.MainPlayer?.ActiveSlot.ContainedItem))
+						if (item.IsChildOf(Singleton<GameWorld>.Instance.MainPlayer?.ActiveSlot.ContainedItem))
 						{
                             TacticalDeviceBatteries.CheckDeviceIfDraining();
 							SightBatteries.CheckSightIfDraining();
