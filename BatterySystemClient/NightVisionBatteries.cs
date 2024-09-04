@@ -63,6 +63,7 @@ namespace BatterySystem
 
         public static void CheckHeadWearIfDraining()
         {
+            //TODO simplify this
             _drainingNightVisionBattery = NightVisionBattery != null && NightVisionBattery.Value > 0
                 && (_nvgDevice == null && _thermalDevice != null
                 ? (((ITogglableComponentContainer)_thermalDevice).Togglable.On && !CameraClass.Instance.ThermalVision.InProcessSwitching)
