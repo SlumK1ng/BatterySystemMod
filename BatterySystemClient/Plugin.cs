@@ -17,7 +17,7 @@ namespace BatterySystem
 	 * flir does not require batteries, make recharge craft
 	 * battery recharger - idea by Props
 	 */
-	[BepInPlugin("com.jiro.batterysystem", "BatterySystem", "1.5.0")]
+	[BepInPlugin("com.jiro.batterysystem", "BatterySystem", "1.6.0")]
 	//[BepInDependency("com.AKI.core", "3.8.0")]
 	public class BatterySystemPlugin : BaseUnityPlugin
 	{
