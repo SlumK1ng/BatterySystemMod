@@ -4,7 +4,7 @@
   "main": "src/batterySystem.js",
   "license": "MIT",
   "author": "Jiro",
-  "sptVersion": "3.9.*",
+  "sptVersion": "~3.11",
   "isBundleMod": true,
   "scripts": {
     "setup": "npm i",

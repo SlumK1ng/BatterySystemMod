@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/sonni/Downloads/BatterySystem-mod/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

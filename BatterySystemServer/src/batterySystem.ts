@@ -7,7 +7,7 @@ import { IPostDBLoadMod } from "@spt/models/external/IPostDBLoadMod";
 import { DatabaseServer } from "@spt/servers/DatabaseServer";
 import { BaseClasses } from "@spt/models/enums/BaseClasses"
 import * as config from "../config/config.json";
-import { TraderPurchaseData } from "@spt/models/eft/profile/ISptProfile";
+import { ITraderPurchaseData } from "@spt/models/eft/profile/ISptProfile";
 
 class Mod implements IPostDBLoadMod {
     private batteryType = "";
@@ -152,7 +152,7 @@ class Mod implements IPostDBLoadMod {
         db.getTables().traders["5c0647fdd443bc2504c2d371"].assort.loyal_level_items["cr2032barter1"] = 1;
         
         //add hideout crafts for batteries
-        hideoutProduction.push(
+        hideoutProduction.recipes.push(
             {
                 "_id": "cr2032Craft0",
                 "areaType": 10,
@@ -184,7 +184,8 @@ class Mod implements IPostDBLoadMod {
                 "continuous": false,
                 "count": 2,
                 "productionLimitCount": 0,
-                "isEncoded": false
+                "isEncoded": false,
+                "isCodeProduction": false
             },
             {
                 // Induction!
@@ -225,7 +226,8 @@ class Mod implements IPostDBLoadMod {
                 "continuous": false,
                 "count": 1,
                 "productionLimitCount": 0,
-                "isEncoded": false
+                "isEncoded": false,
+                "isCodeProduction": false
             },
             /*{ // Car Battery Recharge Test
                 "_id": "carBatteryTest1",
@@ -293,7 +295,8 @@ class Mod implements IPostDBLoadMod {
                 "continuous": false,
                 "count": 2,
                 "productionLimitCount": 0,
-                "isEncoded": false
+                "isEncoded": false,
+                "isCodeProduction": false
             },
             { // Normal charging :(
                 "_id": "cr123Recharge2",
@@ -333,7 +336,8 @@ class Mod implements IPostDBLoadMod {
                 "continuous": false,
                 "count": 3,
                 "productionLimitCount": 0,
-                "isEncoded": false
+                "isEncoded": false,
+                "isCodeProduction": false
             },/*
             { // Normal charging FLIR :(
                 "_id": "flirRecharge0",
