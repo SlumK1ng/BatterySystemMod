@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Read(//c/Users/sonni/Downloads/BatterySystem-mod/**)"
+      "Read(//c/Users/sonni/Downloads/BatterySystem-mod/**)",
+      "Read(//c/SPT/Source Code/SPT311_Assembly/**)"
     ],
     "deny": [],
     "ask": []

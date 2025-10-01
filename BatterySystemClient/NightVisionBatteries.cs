@@ -37,7 +37,7 @@ namespace BatterySystem
             NightVisionItem = BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Headwear).Items?.FirstOrDefault(); // default null else headwear
             _nvgDevice = NightVisionItem?.GetItemComponentsInChildren<NightVisionComponent>().FirstOrDefault(); //default null else nvg item
             _thermalDevice = NightVisionItem?.GetItemComponentsInChildren<ThermalVisionComponent>().FirstOrDefault(); //default null else thermal item
-            NightVisionBattery = GetHeadwearSight()?.Parent.Item.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault(); //default null else resource
+            NightVisionBattery = GetHeadwearSight()?.Parent.Container.ParentItem.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault(); //default null else resource
 
             CheckHeadWearIfDraining();
             BatterySystem.UpdateBatteryDictionary();

@@ -79,7 +79,7 @@ namespace BatterySystem
             if(BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Earpiece).Items?.FirstOrDefault() is Item headphones) return headphones;
             //Try get headphones from helmet attachment slot
             const string headphonesParentId = "5645bcb74bdc2ded0b8b4578";
-            if (BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Headwear).Items?.FirstOrDefault() is LootItemClass helmet)
+            if (BatterySystemPlugin.localInventory.Equipment.GetSlot(EquipmentSlot.Headwear).Items?.FirstOrDefault() is CompoundItem helmet)
             {
                 foreach (Item helmetAttachment in helmet.GetAllItems())
                 {

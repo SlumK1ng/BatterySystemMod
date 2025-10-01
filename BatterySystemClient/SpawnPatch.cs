@@ -32,7 +32,7 @@ namespace BatterySystem
 
 			if (__instance.IsYourPlayer)
 			{
-				BatterySystemPlugin.localInventory = __instance.InventoryControllerClass.Inventory; //Player Inventory
+				BatterySystemPlugin.localInventory = __instance.InventoryController.Inventory; //Player Inventory
                 SightBatteries.sightMods.Clear(); // remove old sight entries that were saved from previous raid
                 TacticalDeviceBatteries.lightMods.Clear(); // same for tactical devices
                 HeadsetBatteries.SetEarPieceComponents();
@@ -49,13 +49,13 @@ namespace BatterySystem
 		
         private static void AddBatteriesToBot(Player botPlayer)
         {
-            Inventory _botInventory = botPlayer.InventoryControllerClass.Inventory;
-            Item AABatteryItem = Singleton<ItemFactory>.Instance.GetPresetItem(BatterySystemPlugin.AABatteryId);
-            Item CR2032Item = Singleton<ItemFactory>.Instance.GetPresetItem(BatterySystemPlugin.CR2032BatteryId);
-            Item CR123Item = Singleton<ItemFactory>.Instance.GetPresetItem(BatterySystemPlugin.CR123BatteryId);
+            Inventory _botInventory = botPlayer.InventoryController.Inventory;
+            Item AABatteryItem = Singleton<ItemFactoryClass>.Instance.GetPresetItem(BatterySystemPlugin.AABatteryId);
+            Item CR2032Item = Singleton<ItemFactoryClass>.Instance.GetPresetItem(BatterySystemPlugin.CR2032BatteryId);
+            Item CR123Item = Singleton<ItemFactoryClass>.Instance.GetPresetItem(BatterySystemPlugin.CR123BatteryId);
             foreach (Item item in _botInventory.Equipment.GetAllItems())
             {
-	            if (!(item is LootItemClass lootItem)) continue;
+	            if (!(item is CompoundItem lootItem)) continue;
 	            
                 foreach (Slot slot in lootItem.AllSlots)
                 {
