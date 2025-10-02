@@ -73,17 +73,13 @@ namespace BatterySystem
         {
             //for because modifying sightMods[key]
             var keys = sightMods.Keys.ToArray();
-            bool anyOpticsWithBattery = false;
             foreach (SightModVisualControllers key in keys)
             {
                 if (key?.SightMod?.Item == null) continue;
-                
+
                 sightMods[key] = key.SightMod.Item.GetItemComponentsInChildren<ResourceComponent>().FirstOrDefault();
                 _drainingSightBattery = (sightMods[key] != null && sightMods[key].Value > 0
                     && BatterySystem.IsInSlot(key.SightMod.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot));
-                
-                if (_drainingSightBattery)
-                    anyOpticsWithBattery = true;
 
                 if (BatterySystemPlugin.batteryDictionary.ContainsKey(key.SightMod.Item))
                     BatterySystemPlugin.batteryDictionary[key.SightMod.Item] = _drainingSightBattery;
@@ -220,30 +216,57 @@ namespace BatterySystem
     // Adds dummy bones for battery slots to prevent bone lookup errors
     public class GetBoneForSlotPatch : ModulePatch
     {
-        private static GClass674.GClass675 _gClass = new GClass674.GClass675();
-        private static Type _gClassType;
-        private static string _methodName = "GetBoneForSlot";
+        private static object _dummyBoneInfo;
+        private static Type _containerCollectionViewType;
+        private static Type _boneInfoType;
+        private static FieldInfo _containerBonesField;
+        private static PropertyInfo _containerIdProperty;
+
         protected override MethodBase GetTargetMethod()
         {
-            _gClassType = PatchConstants.EftTypes.Single(type => {
-                //If type has a method called _methodName, select the type
-                string methodInfo = AccessTools.GetMethodNames(type)
-                .FirstOrDefault(name => name.Equals(_methodName));
-                return methodInfo != null;
+            // Find the type that contains GetBoneForSlot method
+            // In SPT 3.11, this is GClass746
+            _containerCollectionViewType = typeof(Item).Assembly.GetTypes().Single(type =>
+            {
+                return type.GetMethod("GetBoneForSlot", BindingFlags.Public | BindingFlags.Instance) != null
+                    && type.GetField("ContainerBones", BindingFlags.Public | BindingFlags.Instance) != null;
             });
-            Logger.LogWarning(_gClassType.FullName);
-            return AccessTools.Method(_gClassType, _methodName);
+
+            Logger.LogWarning($"Found ContainerCollectionView type: {_containerCollectionViewType.FullName}");
+
+            // Get the nested type for bone info (GClass746.GClass747)
+            _boneInfoType = _containerCollectionViewType.GetNestedTypes().First();
+            Logger.LogWarning($"Found BoneInfo type: {_boneInfoType.FullName}");
+
+            // Create dummy bone info instance
+            _dummyBoneInfo = Activator.CreateInstance(_boneInfoType);
+
+            // Set all properties to null
+            _boneInfoType.GetProperty("Bone").SetValue(_dummyBoneInfo, null);
+            _boneInfoType.GetProperty("Item").SetValue(_dummyBoneInfo, null);
+            _boneInfoType.GetProperty("ItemView").SetValue(_dummyBoneInfo, null);
+
+            // Cache the ContainerBones field
+            _containerBonesField = _containerCollectionViewType.GetField("ContainerBones", BindingFlags.Public | BindingFlags.Instance);
+
+            // Cache the IContainer.ID property
+            _containerIdProperty = typeof(EFT.InventoryLogic.IContainer).GetProperty("ID");
+
+            return AccessTools.Method(_containerCollectionViewType, "GetBoneForSlot");
         }
 
         [PatchPrefix]
-        public static void Prefix(ref GClass674 __instance, IContainer container)
+        public static void Prefix(object __instance, EFT.InventoryLogic.IContainer container)
         {
-            if (!__instance.ContainerBones.ContainsKey(container) && container.ID == "mod_equipment_000")
+            // Get the ContainerBones dictionary
+            var containerBones = (System.Collections.IDictionary)_containerBonesField.GetValue(__instance);
+
+            // Get container ID using reflection
+            string containerId = (string)_containerIdProperty.GetValue(container);
+
+            if (!containerBones.Contains(container) && containerId == "mod_equipment_000")
             {
-                _gClass.Bone = null;
-                _gClass.Item = null;
-                _gClass.ItemView = null;
-                __instance.ContainerBones.Add(container, _gClass);
+                containerBones.Add(container, _dummyBoneInfo);
             }
         }
     }
