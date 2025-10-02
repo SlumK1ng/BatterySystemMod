@@ -217,11 +217,7 @@ namespace BatterySystem
         }
 	}*/
 
-    //Throws NullRefError?
-    //UNNECESSARY???? WHAT
-    // Adds dummy bones for weapon modding window.
-    //TODO: Use reflection instead of gclass
-    /*
+    // Adds dummy bones for battery slots to prevent bone lookup errors
     public class GetBoneForSlotPatch : ModulePatch
     {
         private static GClass674.GClass675 _gClass = new GClass674.GClass675();
@@ -233,7 +229,7 @@ namespace BatterySystem
                 //If type has a method called _methodName, select the type
                 string methodInfo = AccessTools.GetMethodNames(type)
                 .FirstOrDefault(name => name.Equals(_methodName));
-                return methodInfo != null; 
+                return methodInfo != null;
             });
             Logger.LogWarning(_gClassType.FullName);
             return AccessTools.Method(_gClassType, _methodName);
@@ -242,7 +238,7 @@ namespace BatterySystem
         [PatchPrefix]
         public static void Prefix(ref GClass674 __instance, IContainer container)
         {
-            if (!__instance.ContainerBones.ContainsKey(container) && container.ID == "mod_equipment")
+            if (!__instance.ContainerBones.ContainsKey(container) && container.ID == "mod_equipment_000")
             {
                 _gClass.Bone = null;
                 _gClass.Item = null;
@@ -250,5 +246,5 @@ namespace BatterySystem
                 __instance.ContainerBones.Add(container, _gClass);
             }
         }
-    }*/
+    }
 }

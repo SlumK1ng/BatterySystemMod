@@ -70,12 +70,12 @@ class Mod implements IPostDBLoadMod {
         for (let id in items) {
             if (id != BaseClasses.NIGHTVISION && id != BaseClasses.THERMAL_VISION
                 && !config.NoBattery.includes(id)
-                && ((items[id]._parent == BaseClasses.SPECIAL_SCOPE) //flir
+                && (((items[id]._parent == BaseClasses.SPECIAL_SCOPE) //flir
                     || (items[id]._parent == BaseClasses.NIGHTVISION || items[id]._parent == BaseClasses.THERMAL_VISION)) // headwear
                 || (items[id]._parent == BaseClasses.COLLIMATOR || items[id]._parent == BaseClasses.COMPACT_COLLIMATOR) //sight
                 || (items[id]._parent == BaseClasses.HEADPHONES) //earpiece
                 || (items[id]._parent == BaseClasses.FLASHLIGHT || items[id]._parent == BaseClasses.LIGHT_LASER_DESIGNATOR
-                    || items[id]._parent == BaseClasses.TACTICAL_COMBO)) { //tactical device
+                    || items[id]._parent == BaseClasses.TACTICAL_COMBO))) { //tactical device
 
                 if (config.AA.includes(id))
                     this.batteryType = aaBatteryID;     //AA Battery stays AA Battery              
@@ -98,7 +98,7 @@ class Mod implements IPostDBLoadMod {
                 //logger.info("Adding slot to: " + items[id]._name);
                 items[id]._props.Slots.push(
                     {
-                        "_name": "mod_equipment",
+                        "_name": "mod_equipment_000",
                         "_id": "id_" + id.toLowerCase(),
                         "_parent": "parent_" + id.toLowerCase(),
                         "_props": {
@@ -154,7 +154,7 @@ class Mod implements IPostDBLoadMod {
         //add hideout crafts for batteries
         hideoutProduction.recipes.push(
             {
-                "_id": "cr2032Craft0",
+                "_id": "6a1f2e3c4b5d6e7f8a9b0c1d",
                 "areaType": 10,
                 "requirements": [
                     {
@@ -189,7 +189,7 @@ class Mod implements IPostDBLoadMod {
             },
             {
                 // Induction!
-                "_id": "cr123Recharge0",
+                "_id": "6a1f2e3c4b5d6e7f8a9b0c2e",
                 "areaType": 2,
                 "requirements": [
                     {
@@ -257,7 +257,7 @@ class Mod implements IPostDBLoadMod {
                 "isEncoded": false
             },**/
             { // Car Battery!
-                "_id": "cr123Recharge1",
+                "_id": "6a1f2e3c4b5d6e7f8a9b0c3f",
                 "areaType": 2,
                 "requirements": [
                     {
@@ -299,7 +299,7 @@ class Mod implements IPostDBLoadMod {
                 "isCodeProduction": false
             },
             { // Normal charging :(
-                "_id": "cr123Recharge2",
+                "_id": "6a1f2e3c4b5d6e7f8a9b0c4a",
                 "areaType": 10,
                 "requirements": [
                     {
