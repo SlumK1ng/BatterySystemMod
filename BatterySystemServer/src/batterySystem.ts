@@ -269,7 +269,7 @@ class Mod implements IPostDBLoadMod {
                         "templateId": "5733279d245977289b77ec24", //Car battery
                         "count": 1,
                         "isFunctional": false,
-                        "resource": 100,
+                        "resource": 25,
                         "isEncoded": false,
                         "type": "Tool"
                     },

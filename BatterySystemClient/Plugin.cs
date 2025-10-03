@@ -43,7 +43,7 @@ namespace BatterySystem
 			new TacticalDevicePatch().Enable();
 			new NvgHeadWearPatch().Enable();
 			new ThermalHeadWearPatch().Enable();
-			new GetBoneForSlotPatch().Enable();
+			new PoolManagerBatteryBonePatch().Enable();
             //new FoldableSightPatch().Enable();
 
             InvokeRepeating(nameof(Heartbeat), 1, 1);
@@ -56,13 +56,18 @@ namespace BatterySystem
 		{
 			if (!InGame()) return;
 
-			//here?
+			// Update the draining status BEFORE draining
+			HeadsetBatteries.CheckEarPieceIfDraining();
+			NightVisionBatteries.CheckHeadWearIfDraining();
+			TacticalDeviceBatteries.CheckDeviceIfDraining();
+			SightBatteries.CheckSightIfDraining();
+
 			var batteryKeys = batteryDictionary.Keys.ToArray();
             foreach (Item batteryItem in batteryKeys)
 			{
 				//Is draining disabled on this battery?
 				if (!batteryDictionary[batteryItem]) continue;
-				
+
 				//for sights, earpiece and tactical devices
 				if (batteryItem.GetItemComponentsInChildren<ResourceComponent>(false).FirstOrDefault() is ResourceComponent batteryResource)
 				{
@@ -72,7 +77,7 @@ namespace BatterySystem
 					if (batteryResource.Value < 0f)
 					{
 						batteryResource.Value = 0f;
-						
+
 						HeadsetBatteries.CheckEarPieceIfDraining();
 						NightVisionBatteries.CheckHeadWearIfDraining();
 						TacticalDeviceBatteries.CheckDeviceIfDraining();

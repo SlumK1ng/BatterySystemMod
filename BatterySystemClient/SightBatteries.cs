@@ -78,8 +78,13 @@ namespace BatterySystem
                 if (key?.SightMod?.Item == null) continue;
 
                 sightMods[key] = key.SightMod.Item.GetItemComponentsInChildren<ResourceComponent>().FirstOrDefault();
+
+                // Check if player is aiming down sights
+                bool isAiming = Singleton<GameWorld>.Instance?.MainPlayer?.ProceduralWeaponAnimation?.IsAiming == true;
+
                 _drainingSightBattery = (sightMods[key] != null && sightMods[key].Value > 0
-                    && BatterySystem.IsInSlot(key.SightMod.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot));
+                    && BatterySystem.IsInSlot(key.SightMod.Item, Singleton<GameWorld>.Instance?.MainPlayer.ActiveSlot)
+                    && isAiming);
 
                 if (BatterySystemPlugin.batteryDictionary.ContainsKey(key.SightMod.Item))
                     BatterySystemPlugin.batteryDictionary[key.SightMod.Item] = _drainingSightBattery;
@@ -213,60 +218,60 @@ namespace BatterySystem
         }
 	}*/
 
-    // Adds dummy bones for battery slots to prevent bone lookup errors
-    public class GetBoneForSlotPatch : ModulePatch
+    // Patches PoolManager to add dummy bones for battery slots during item instantiation
+    public class PoolManagerBatteryBonePatch : ModulePatch
     {
-        private static object _dummyBoneInfo;
-        private static Type _containerCollectionViewType;
-        private static Type _boneInfoType;
-        private static FieldInfo _containerBonesField;
-        private static PropertyInfo _containerIdProperty;
+        private static MethodInfo _addBoneMethod;
 
         protected override MethodBase GetTargetMethod()
         {
-            // Find the type that contains GetBoneForSlot method
-            // In SPT 3.11, this is GClass746
-            _containerCollectionViewType = typeof(Item).Assembly.GetTypes().Single(type =>
+            // Find PoolManagerClass.method_3 which handles bone registration
+            var poolManagerType = typeof(Item).Assembly.GetTypes().First(t => t.Name == "PoolManagerClass");
+
+            return AccessTools.GetDeclaredMethods(poolManagerType).First(m =>
             {
-                return type.GetMethod("GetBoneForSlot", BindingFlags.Public | BindingFlags.Instance) != null
-                    && type.GetField("ContainerBones", BindingFlags.Public | BindingFlags.Instance) != null;
+                var parameters = m.GetParameters();
+                return parameters.Length >= 2
+                    && parameters[0].ParameterType.Name.Contains("GClass3050") // ContainerCollection
+                    && parameters[1].ParameterType.Name.Contains("GClass746"); // ContainerCollectionView
             });
-
-            Logger.LogWarning($"Found ContainerCollectionView type: {_containerCollectionViewType.FullName}");
-
-            // Get the nested type for bone info (GClass746.GClass747)
-            _boneInfoType = _containerCollectionViewType.GetNestedTypes().First();
-            Logger.LogWarning($"Found BoneInfo type: {_boneInfoType.FullName}");
-
-            // Create dummy bone info instance
-            _dummyBoneInfo = Activator.CreateInstance(_boneInfoType);
-
-            // Set all properties to null
-            _boneInfoType.GetProperty("Bone").SetValue(_dummyBoneInfo, null);
-            _boneInfoType.GetProperty("Item").SetValue(_dummyBoneInfo, null);
-            _boneInfoType.GetProperty("ItemView").SetValue(_dummyBoneInfo, null);
-
-            // Cache the ContainerBones field
-            _containerBonesField = _containerCollectionViewType.GetField("ContainerBones", BindingFlags.Public | BindingFlags.Instance);
-
-            // Cache the IContainer.ID property
-            _containerIdProperty = typeof(EFT.InventoryLogic.IContainer).GetProperty("ID");
-
-            return AccessTools.Method(_containerCollectionViewType, "GetBoneForSlot");
         }
 
-        [PatchPrefix]
-        public static void Prefix(object __instance, EFT.InventoryLogic.IContainer container)
+        [PatchPostfix]
+        public static void Postfix(object containerCollection, object collectionView)
         {
-            // Get the ContainerBones dictionary
-            var containerBones = (System.Collections.IDictionary)_containerBonesField.GetValue(__instance);
-
-            // Get container ID using reflection
-            string containerId = (string)_containerIdProperty.GetValue(container);
-
-            if (!containerBones.Contains(container) && containerId == "mod_equipment_000")
+            try
             {
-                containerBones.Add(container, _dummyBoneInfo);
+                if (_addBoneMethod == null)
+                {
+                    _addBoneMethod = collectionView.GetType().GetMethod("AddBone");
+                }
+
+                // Get the Containers property
+                var containersProperty = containerCollection.GetType().GetProperty("Containers");
+                var containers = containersProperty.GetValue(containerCollection) as System.Collections.IEnumerable;
+
+                // Get the ContainerBones dictionary to check what's already registered
+                var containerBonesField = collectionView.GetType().GetField("ContainerBones", BindingFlags.Public | BindingFlags.Instance);
+                var containerBones = containerBonesField.GetValue(collectionView) as System.Collections.IDictionary;
+
+                foreach (object container in containers)
+                {
+                    Slot slot = container as Slot;
+                    if (slot != null && slot.ID == "mod_equipment_000")
+                    {
+                        // Only add if not already registered
+                        if (!containerBones.Contains(slot))
+                        {
+                            // AddBone with null transform creates a dummy bone entry
+                            _addBoneMethod.Invoke(collectionView, new object[] { slot, null });
+                        }
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Logger.LogError($"[BatterySystem] PoolManagerBatteryBonePatch error: {ex.Message}");
             }
         }
     }
